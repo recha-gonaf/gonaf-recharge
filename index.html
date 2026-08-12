@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>GONAF+ | Recharge Services</title>
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>GONAF+ | Recharge</title>
+
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -30,7 +38,7 @@
     }
 
     .logo {
-      font-size: 22px;
+      font-size: 23px;
       font-weight: 800;
     }
 
@@ -39,52 +47,50 @@
     }
 
     .language {
-      padding: 8px 12px;
       border: 1px solid #ddd;
       background: white;
+      padding: 8px 12px;
       border-radius: 10px;
-      font-weight: 600;
     }
 
     .hero {
       text-align: center;
-      padding: 70px 20px 45px;
+      padding: 65px 20px 45px;
     }
 
     .badge {
       display: inline-block;
-      background: #e8faf2;
-      color: #159463;
       padding: 7px 12px;
       border-radius: 20px;
-      font-size: 12px;
+      background: #e8faf2;
+      color: #159463;
+      font-size: 11px;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .hero h1 {
-      font-size: 48px;
-      line-height: 1;
+      font-size: 46px;
+      line-height: 1.05;
       letter-spacing: -2px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .hero p {
-      max-width: 560px;
+      max-width: 570px;
       margin: auto;
       color: #737780;
-      font-size: 16px;
       line-height: 1.6;
     }
 
     .services {
-      max-width: 1100px;
+      max-width: 1050px;
       margin: auto;
       padding: 20px;
     }
 
     .section-title {
-      margin-bottom: 25px;
+      margin-bottom: 22px;
     }
 
     .section-title small {
@@ -96,7 +102,7 @@
 
     .section-title h2 {
       margin-top: 8px;
-      font-size: 30px;
+      font-size: 29px;
     }
 
     .section-title p {
@@ -111,6 +117,7 @@
     }
 
     .service-card {
+      width: 100%;
       border: 1px solid #e5e5e5;
       background: white;
       border-radius: 18px;
@@ -120,12 +127,12 @@
       gap: 15px;
       cursor: pointer;
       text-align: left;
-      transition: 0.2s;
+      transition: .2s;
     }
 
     .service-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+      box-shadow: 0 10px 30px rgba(0,0,0,.07);
     }
 
     .icon {
@@ -211,259 +218,882 @@
       margin-top: 8px;
     }
 
+
+    /* =========================
+       RECHARGE PAGE
+    ========================= */
+
+    .page {
+      max-width: 650px;
+      margin: auto;
+      padding: 50px 20px;
+    }
+
+    .back {
+      border: none;
+      background: none;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 25px;
+      font-size: 15px;
+    }
+
+    .box {
+      background: white;
+      border: 1px solid #e5e5e5;
+      border-radius: 22px;
+      padding: 30px;
+    }
+
+    .box h1 {
+      font-size: 34px;
+      margin: 15px 0 8px;
+    }
+
+    .box p {
+      color: #777;
+    }
+
+    .amount-label {
+      display: block;
+      margin-top: 30px;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .amount-box {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 0 15px;
+    }
+
+    .amount-box span {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .amount-box input {
+      width: 100%;
+      border: none;
+      outline: none;
+      padding: 17px 10px;
+      font-size: 22px;
+    }
+
+    .primary {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 20px;
+      background: #111;
+      color: white;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .payment-card {
+      width: 100%;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 15px;
+      padding: 18px;
+      margin-top: 12px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .payment-card strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .payment-card span {
+      color: #777;
+      font-size: 13px;
+    }
+
+    .summary {
+      border: 1px solid #eee;
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 25px;
+      margin-bottom: 20px;
+    }
+
+    .summary-row {
+      margin-bottom: 18px;
+    }
+
+    .summary-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .summary-row small {
+      color: #777;
+    }
+
+
     @media (max-width: 700px) {
 
-      .hero {
-        padding-top: 55px;
-      }
-
       .hero h1 {
-        font-size: 43px;
+        font-size: 40px;
       }
 
       .services-grid {
         grid-template-columns: 1fr;
       }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
-  <header>
 
-    <div class="logo">
-      GONAF<span>+</span>
-    </div>
-
-    <button class="language">
-      EN
-    </button>
-
-  </header>
+  <div id="app"></div>
 
 
-  <section class="hero">
+  <script>
 
-    <div class="badge">
-      FAST • SIMPLE • SECURE
-    </div>
+    // =========================================
+    // GONAF+ FRONTEND
+    // =========================================
 
-    <h1>
-      Recharge your<br>
-      favorite services.
-    </h1>
-
-    <p>
-      Fast and simple recharge services for Wise, Pana,
-      Meru, PayPal, Cash App and USDC on Base.
-    </p>
-
-  </section>
+    let selectedService = "";
+    let selectedAmount = 0;
+    let selectedPayment = "";
 
 
-  <section class="services">
+    // =========================================
+    // HOME
+    // =========================================
 
-    <div class="section-title">
+    function home() {
 
-      <small>OUR SERVICES</small>
+      document.getElementById("app").innerHTML = `
 
-      <h2>
-        What do you want to recharge?
-      </h2>
+        <header>
 
-      <p>
-        Select a service to continue.
-      </p>
+          <div class="logo">
+            GONAF<span>+</span>
+          </div>
 
-    </div>
+          <button class="language">
+            EN
+          </button>
+
+        </header>
 
 
-    <div class="services-grid">
+        <section class="hero">
 
+          <div class="badge">
+            FAST • SIMPLE • SECURE
+          </div>
 
-      <!-- WISE -->
-
-      <button class="service-card">
-
-        <div class="icon wise">
-          W
-        </div>
-
-        <div class="service-info">
-
-          <h3>
-            Recharge Wise
-          </h3>
+          <h1>
+            Recharge your<br>
+            favorite services.
+          </h1>
 
           <p>
-            Add funds to your Wise account.
+            Fast and simple recharge services for
+            Wise, Pana, Meru, PayPal, Cash App
+            and USDC on Base.
           </p>
 
-        </div>
-
-        <div class="arrow">
-          →
-        </div>
-
-      </button>
+        </section>
 
 
-      <!-- PANA -->
+        <section class="services">
 
-      <button class="service-card">
+          <div class="section-title">
 
-        <div class="icon pana">
-          P
-        </div>
+            <small>
+              OUR SERVICES
+            </small>
 
-        <div class="service-info">
+            <h2>
+              What do you want to recharge?
+            </h2>
 
-          <h3>
-            Recharge Pana
-          </h3>
+            <p>
+              Select a service to continue.
+            </p>
+
+          </div>
+
+
+          <div class="services-grid">
+
+
+            ${serviceCard(
+              "Wise",
+              "W",
+              "wise",
+              "Add funds to your Wise account."
+            )}
+
+
+            ${serviceCard(
+              "Pana",
+              "P",
+              "pana",
+              "Recharge your Pana account."
+            )}
+
+
+            ${serviceCard(
+              "Meru",
+              "M",
+              "meru",
+              "Recharge your Meru account."
+            )}
+
+
+            ${serviceCard(
+              "PayPal",
+              "P",
+              "paypal",
+              "Add funds to your PayPal account."
+            )}
+
+
+            ${serviceCard(
+              "Cash App",
+              "$",
+              "cashapp",
+              "Recharge your Cash App balance."
+            )}
+
+
+            ${serviceCard(
+              "USDC/Base",
+              "$",
+              "usdc",
+              "Receive USDC on Base network."
+            )}
+
+          </div>
+
+        </section>
+
+
+        <footer>
+
+          <strong>
+            GONAF<span>+</span>
+          </strong>
 
           <p>
-            Recharge your Pana account.
+            Your gateway to simple digital services.
           </p>
-
-        </div>
-
-        <div class="arrow">
-          →
-        </div>
-
-      </button>
-
-
-      <!-- MERU -->
-
-      <button class="service-card">
-
-        <div class="icon meru">
-          M
-        </div>
-
-        <div class="service-info">
-
-          <h3>
-            Recharge Meru
-          </h3>
 
           <p>
-            Recharge your Meru account.
+            © 2026 GONAF+. All rights reserved.
           </p>
 
-        </div>
+        </footer>
 
-        <div class="arrow">
-          →
-        </div>
+      `;
 
-      </button>
+    }
 
 
-      <!-- PAYPAL -->
+    // =========================================
+    // SERVICE CARD
+    // =========================================
 
-      <button class="service-card">
+    function serviceCard(
+      name,
+      icon,
+      className,
+      description
+    ) {
 
-        <div class="icon paypal">
-          P
-        </div>
+      return `
 
-        <div class="service-info">
+        <button
+          class="service-card"
+          onclick="selectService('${name}')"
+        >
 
-          <h3>
-            Recharge PayPal
-          </h3>
+          <div class="icon ${className}">
+            ${icon}
+          </div>
 
-          <p>
-            Add funds to your PayPal account.
-          </p>
+          <div class="service-info">
 
-        </div>
+            <h3>
+              Recharge ${name}
+            </h3>
 
-        <div class="arrow">
-          →
-        </div>
+            <p>
+              ${description}
+            </p>
 
-      </button>
+          </div>
 
+          <div class="arrow">
+            →
+          </div>
 
-      <!-- CASH APP -->
+        </button>
 
-      <button class="service-card">
+      `;
 
-        <div class="icon cashapp">
-          $
-        </div>
-
-        <div class="service-info">
-
-          <h3>
-            Recharge Cash App
-          </h3>
-
-          <p>
-            Recharge your Cash App balance.
-          </p>
-
-        </div>
-
-        <div class="arrow">
-          →
-        </div>
-
-      </button>
+    }
 
 
-      <!-- USDC -->
+    // =========================================
+    // SELECT SERVICE
+    // =========================================
 
-      <button class="service-card">
+    function selectService(service) {
 
-        <div class="icon usdc">
-          $
-        </div>
+      selectedService = service;
 
-        <div class="service-info">
+      amountPage();
 
-          <h3>
-            Recharge USDC/Base
-          </h3>
-
-          <p>
-            Receive USDC on Base network.
-          </p>
-
-        </div>
-
-        <div class="arrow">
-          →
-        </div>
-
-      </button>
+    }
 
 
-    </div>
+    // =========================================
+    // AMOUNT PAGE
+    // =========================================
 
-  </section>
+    function amountPage() {
+
+      document.getElementById("app").innerHTML = `
+
+        <header>
+
+          <div class="logo">
+            GONAF<span>+</span>
+          </div>
+
+        </header>
 
 
-  <footer>
+        <main class="page">
 
-    <strong>
-      GONAF<span>+</span>
-    </strong>
+          <button
+            class="back"
+            onclick="home()"
+          >
+            ← Back
+          </button>
 
-    <p>
-      Your gateway to simple digital services.
-    </p>
 
-    <p>
-      © 2026 GONAF+. All rights reserved.
-    </p>
+          <div class="box">
 
-  </footer>
-<script src="app.js"></script>
+            <div class="badge">
+              RECHARGE SERVICE
+            </div>
+
+
+            <h1>
+              Recharge ${selectedService}
+            </h1>
+
+
+            <p>
+              Enter the amount you want to recharge.
+            </p>
+
+
+            <label class="amount-label">
+              Amount
+            </label>
+
+
+            <div class="amount-box">
+
+              <span>
+                $
+              </span>
+
+              <input
+                id="amountInput"
+                type="number"
+                min="1"
+                step="0.01"
+                placeholder="0.00"
+              >
+
+            </div>
+
+
+            <button
+              class="primary"
+              onclick="continueAmount()"
+            >
+              Continue
+            </button>
+
+          </div>
+
+        </main>
+
+      `;
+
+    }
+
+
+    // =========================================
+    // CONTINUE AMOUNT
+    // =========================================
+
+    function continueAmount() {
+
+      const input =
+        document.getElementById(
+          "amountInput"
+        );
+
+
+      const amount =
+        parseFloat(input.value);
+
+
+      if (
+        !amount ||
+        amount <= 0
+      ) {
+
+        alert(
+          "Please enter a valid amount."
+        );
+
+        return;
+
+      }
+
+
+      selectedAmount = amount;
+
+      paymentPage();
+
+    }
+
+
+    // =========================================
+    // PAYMENT PAGE
+    // =========================================
+
+    function paymentPage() {
+
+
+      let methods = [
+
+        {
+          name: "MonCash",
+          description:
+            "For customers in Haiti or Dominican Republic"
+        },
+
+        {
+          name: "Banco Popular",
+          description:
+            "For customers living in Dominican Republic"
+        },
+
+        {
+          name: "USDC / Base",
+          description:
+            "Pay with USDC on Base network"
+        },
+
+        {
+          name: "PayPal",
+          description:
+            "Pay using PayPal"
+        }
+
+      ];
+
+
+      // ======================================
+      // IMPORTANT RULES
+      // ======================================
+
+      // PayPal cannot be used
+      // to recharge PayPal.
+
+      if (
+        selectedService === "PayPal"
+      ) {
+
+        methods =
+          methods.filter(
+            method =>
+              method.name !== "PayPal"
+          );
+
+      }
+
+
+      // USDC/Base cannot be used
+      // to recharge USDC/Base.
+
+      if (
+        selectedService === "USDC/Base"
+      ) {
+
+        methods =
+          methods.filter(
+            method =>
+              method.name !== "USDC / Base"
+          );
+
+      }
+
+
+      document.getElementById("app").innerHTML = `
+
+        <header>
+
+          <div class="logo">
+            GONAF<span>+</span>
+          </div>
+
+        </header>
+
+
+        <main class="page">
+
+          <button
+            class="back"
+            onclick="amountPage()"
+          >
+            ← Back
+          </button>
+
+
+          <div class="box">
+
+            <div class="badge">
+              PAYMENT METHOD
+            </div>
+
+
+            <h1>
+              Choose how to pay
+            </h1>
+
+
+            <p>
+              Recharge
+              <strong>
+                ${selectedService}
+              </strong>
+
+              <br>
+
+              Amount:
+              <strong>
+                $${selectedAmount.toFixed(2)}
+              </strong>
+            </p>
+
+
+            <div style="margin-top:25px;">
+
+              ${methods
+                .map(
+                  method => `
+
+                    <button
+                      class="payment-card"
+                      onclick="selectPayment('${method.name}')"
+                    >
+
+                      <strong>
+                        ${method.name}
+                      </strong>
+
+                      <span>
+                        ${method.description}
+                      </span>
+
+                    </button>
+
+                  `
+                )
+                .join("")}
+
+            </div>
+
+          </div>
+
+        </main>
+
+      `;
+
+    }
+
+
+    // =========================================
+    // SELECT PAYMENT
+    // =========================================
+
+    function selectPayment(method) {
+
+      selectedPayment = method;
+
+      confirmationPage();
+
+    }
+
+
+    // =========================================
+    // CONFIRMATION
+    // =========================================
+
+    function confirmationPage() {
+
+      document.getElementById("app").innerHTML = `
+
+        <header>
+
+          <div class="logo">
+            GONAF<span>+</span>
+          </div>
+
+        </header>
+
+
+        <main class="page">
+
+          <button
+            class="back"
+            onclick="paymentPage()"
+          >
+            ← Back
+          </button>
+
+
+          <div class="box">
+
+            <div class="badge">
+              ORDER SUMMARY
+            </div>
+
+
+            <h1>
+              Confirm your order
+            </h1>
+
+
+            <div class="summary">
+
+
+              <div class="summary-row">
+
+                <small>
+                  Service
+                </small>
+
+                <br>
+
+                <strong>
+                  Recharge ${selectedService}
+                </strong>
+
+              </div>
+
+
+              <div class="summary-row">
+
+                <small>
+                  Amount
+                </small>
+
+                <br>
+
+                <strong>
+                  $${selectedAmount.toFixed(2)}
+                </strong>
+
+              </div>
+
+
+              <div class="summary-row">
+
+                <small>
+                  Payment method
+                </small>
+
+                <br>
+
+                <strong>
+                  ${selectedPayment}
+                </strong>
+
+              </div>
+
+
+            </div>
+
+
+            <button
+              class="primary"
+              onclick="createOrder()"
+            >
+              Confirm Order
+            </button>
+
+          </div>
+
+        </main>
+
+      `;
+
+    }
+
+
+    // =========================================
+    // CREATE ORDER
+    // =========================================
+
+    function createOrder() {
+
+      const random =
+        Math.floor(
+          100000 +
+          Math.random() * 900000
+        );
+
+
+      const orderId =
+        "GNF-" + random;
+
+
+      document.getElementById("app").innerHTML = `
+
+        <main
+          style="
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:20px;
+          "
+        >
+
+          <div
+            class="box"
+            style="
+              width:100%;
+              max-width:500px;
+              text-align:center;
+            "
+          >
+
+            <div
+              style="
+                font-size:55px;
+                margin-bottom:15px;
+              "
+            >
+              ✓
+            </div>
+
+
+            <h1>
+              Order Created
+            </h1>
+
+
+            <p>
+              Your recharge order has been created.
+            </p>
+
+
+            <div
+              style="
+                margin:25px 0;
+                padding:18px;
+                background:#f5f5f5;
+                border-radius:14px;
+                font-weight:bold;
+                font-size:20px;
+              "
+            >
+              ${orderId}
+            </div>
+
+
+            <div
+              style="
+                text-align:left;
+                line-height:2;
+              "
+            >
+
+              <strong>
+                Service:
+              </strong>
+
+              Recharge ${selectedService}
+
+              <br>
+
+
+              <strong>
+                Amount:
+              </strong>
+
+              $${selectedAmount.toFixed(2)}
+
+              <br>
+
+
+              <strong>
+                Payment:
+              </strong>
+
+              ${selectedPayment}
+
+            </div>
+
+
+            <p
+              style="
+                margin-top:25px;
+                font-size:13px;
+              "
+            >
+              Payment instructions will be connected
+              in the next step.
+            </p>
+
+          </div>
+
+        </main>
+
+      `;
+
+    }
+
+
+    // =========================================
+    // LOAD HOME
+    // =========================================
+
+    home();
+
+  </script>
+
+
 </body>
-    </html>
+
+                  </html>
