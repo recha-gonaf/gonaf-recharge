@@ -40,6 +40,7 @@
     .logo {
       font-size: 23px;
       font-weight: 800;
+      cursor: pointer;
     }
 
     .logo span {
@@ -51,6 +52,7 @@
       background: white;
       padding: 8px 12px;
       border-radius: 10px;
+      cursor: pointer;
     }
 
     .hero {
@@ -147,39 +149,14 @@
       font-size: 20px;
     }
 
-    .wise {
-      background: #e8fff4;
-      color: #163f31;
-    }
+    .wise { background: #e8fff4; color: #163f31; }
+    .pana { background: #eee9ff; color: #6845d8; }
+    .meru { background: #eaf2ff; color: #2966d9; }
+    .paypal { background: #e8f1ff; color: #1464d2; }
+    .cashapp { background: #e8faed; color: #18a558; }
+    .usdc { background: #eef2ff; color: #4f46e5; }
 
-    .pana {
-      background: #eee9ff;
-      color: #6845d8;
-    }
-
-    .meru {
-      background: #eaf2ff;
-      color: #2966d9;
-    }
-
-    .paypal {
-      background: #e8f1ff;
-      color: #1464d2;
-    }
-
-    .cashapp {
-      background: #e8faed;
-      color: #18a558;
-    }
-
-    .usdc {
-      background: #eef2ff;
-      color: #4f46e5;
-    }
-
-    .service-info {
-      flex: 1;
-    }
+    .service-info { flex: 1; }
 
     .service-info h3 {
       font-size: 16px;
@@ -204,24 +181,14 @@
       border-top: 1px solid #eee;
     }
 
-    footer strong {
-      font-size: 22px;
-    }
-
-    footer strong span {
-      color: #19c37d;
-    }
+    footer strong { font-size: 22px; }
+    footer strong span { color: #19c37d; }
 
     footer p {
       color: #777;
       font-size: 13px;
       margin-top: 8px;
     }
-
-
-    /* =========================
-       RECHARGE PAGE
-    ========================= */
 
     .page {
       max-width: 650px;
@@ -250,8 +217,13 @@
       margin: 15px 0 8px;
     }
 
-    .box p {
-      color: #777;
+    .box p { color: #777; }
+
+    .error-msg {
+      color: #d33;
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
     }
 
     .amount-label {
@@ -296,6 +268,19 @@
       cursor: pointer;
     }
 
+    .secondary {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 12px;
+      background: white;
+      color: #111;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
     .payment-card {
       width: 100%;
       background: white;
@@ -307,15 +292,8 @@
       cursor: pointer;
     }
 
-    .payment-card strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .payment-card span {
-      color: #777;
-      font-size: 13px;
-    }
+    .payment-card strong { display: block; margin-bottom: 5px; }
+    .payment-card span { color: #777; font-size: 13px; }
 
     .summary {
       border: 1px solid #eee;
@@ -325,29 +303,13 @@
       margin-bottom: 20px;
     }
 
-    .summary-row {
-      margin-bottom: 18px;
-    }
-
-    .summary-row:last-child {
-      margin-bottom: 0;
-    }
-
-    .summary-row small {
-      color: #777;
-    }
-
+    .summary-row { margin-bottom: 18px; }
+    .summary-row:last-child { margin-bottom: 0; }
+    .summary-row small { color: #777; }
 
     @media (max-width: 700px) {
-
-      .hero h1 {
-        font-size: 40px;
-      }
-
-      .services-grid {
-        grid-template-columns: 1fr;
-      }
-
+      .hero h1 { font-size: 40px; }
+      .services-grid { grid-template-columns: 1fr; }
     }
 
   </style>
@@ -367,9 +329,38 @@
     // GONAF+ FRONTEND
     // =========================================
 
+    // Montant maximum autorisé par recharge (à ajuster selon les règles métier)
+    const MAX_AMOUNT = 5000;
+
     let selectedService = "";
     let selectedAmount = 0;
     let selectedPayment = "";
+
+
+    // =========================================
+    // HEADER (partagé sur toutes les pages,
+    // évite la duplication et les incohérences)
+    // =========================================
+
+    function renderHeader() {
+
+      return `
+
+        <header>
+
+          <div class="logo" onclick="home()">
+            GONAF<span>+</span>
+          </div>
+
+          <button class="language" onclick="alert('Sélection de langue à venir.')">
+            EN
+          </button>
+
+        </header>
+
+      `;
+
+    }
 
 
     // =========================================
@@ -378,19 +369,13 @@
 
     function home() {
 
+      selectedService = "";
+      selectedAmount = 0;
+      selectedPayment = "";
+
       document.getElementById("app").innerHTML = `
 
-        <header>
-
-          <div class="logo">
-            GONAF<span>+</span>
-          </div>
-
-          <button class="language">
-            EN
-          </button>
-
-        </header>
+        ${renderHeader()}
 
 
         <section class="hero">
@@ -434,53 +419,12 @@
 
           <div class="services-grid">
 
-
-            ${serviceCard(
-              "Wise",
-              "W",
-              "wise",
-              "Add funds to your Wise account."
-            )}
-
-
-            ${serviceCard(
-              "Pana",
-              "P",
-              "pana",
-              "Recharge your Pana account."
-            )}
-
-
-            ${serviceCard(
-              "Meru",
-              "M",
-              "meru",
-              "Recharge your Meru account."
-            )}
-
-
-            ${serviceCard(
-              "PayPal",
-              "P",
-              "paypal",
-              "Add funds to your PayPal account."
-            )}
-
-
-            ${serviceCard(
-              "Cash App",
-              "$",
-              "cashapp",
-              "Recharge your Cash App balance."
-            )}
-
-
-            ${serviceCard(
-              "USDC/Base",
-              "$",
-              "usdc",
-              "Receive USDC on Base network."
-            )}
+            ${serviceCard("Wise", "W", "wise", "Add funds to your Wise account.")}
+            ${serviceCard("Pana", "P", "pana", "Recharge your Pana account.")}
+            ${serviceCard("Meru", "M", "meru", "Recharge your Meru account.")}
+            ${serviceCard("PayPal", "P", "paypal", "Add funds to your PayPal account.")}
+            ${serviceCard("Cash App", "$", "cashapp", "Recharge your Cash App balance.")}
+            ${serviceCard("USDC/Base", "$", "usdc", "Receive USDC on Base network.")}
 
           </div>
 
@@ -512,12 +456,7 @@
     // SERVICE CARD
     // =========================================
 
-    function serviceCard(
-      name,
-      icon,
-      className,
-      description
-    ) {
+    function serviceCard(name, icon, className, description) {
 
       return `
 
@@ -531,20 +470,11 @@
           </div>
 
           <div class="service-info">
-
-            <h3>
-              Recharge ${name}
-            </h3>
-
-            <p>
-              ${description}
-            </p>
-
+            <h3>Recharge ${name}</h3>
+            <p>${description}</p>
           </div>
 
-          <div class="arrow">
-            →
-          </div>
+          <div class="arrow">→</div>
 
         </button>
 
@@ -560,7 +490,6 @@
     function selectService(service) {
 
       selectedService = service;
-
       amountPage();
 
     }
@@ -574,68 +503,38 @@
 
       document.getElementById("app").innerHTML = `
 
-        <header>
-
-          <div class="logo">
-            GONAF<span>+</span>
-          </div>
-
-        </header>
-
+        ${renderHeader()}
 
         <main class="page">
 
-          <button
-            class="back"
-            onclick="home()"
-          >
-            ← Back
-          </button>
-
+          <button class="back" onclick="home()">← Back</button>
 
           <div class="box">
 
-            <div class="badge">
-              RECHARGE SERVICE
-            </div>
+            <div class="badge">RECHARGE SERVICE</div>
 
+            <h1>Recharge ${selectedService}</h1>
 
-            <h1>
-              Recharge ${selectedService}
-            </h1>
+            <p>Enter the amount you want to recharge.</p>
 
-
-            <p>
-              Enter the amount you want to recharge.
-            </p>
-
-
-            <label class="amount-label">
-              Amount
-            </label>
-
+            <label class="amount-label">Amount</label>
 
             <div class="amount-box">
-
-              <span>
-                $
-              </span>
-
+              <span>$</span>
               <input
                 id="amountInput"
                 type="number"
                 min="1"
+                max="${MAX_AMOUNT}"
                 step="0.01"
                 placeholder="0.00"
+                onkeydown="if(event.key === 'Enter') continueAmount();"
               >
-
             </div>
 
+            <div id="amountError" class="error-msg"></div>
 
-            <button
-              class="primary"
-              onclick="continueAmount()"
-            >
+            <button class="primary" onclick="continueAmount()">
               Continue
             </button>
 
@@ -644,6 +543,9 @@
         </main>
 
       `;
+
+      // Focus direct pour que l'utilisateur puisse taper immédiatement
+      document.getElementById("amountInput").focus();
 
     }
 
@@ -654,31 +556,32 @@
 
     function continueAmount() {
 
-      const input =
-        document.getElementById(
-          "amountInput"
-        );
+      const input = document.getElementById("amountInput");
+      const errorEl = document.getElementById("amountError");
+      const amount = parseFloat(input.value);
 
+      errorEl.style.display = "none";
 
-      const amount =
-        parseFloat(input.value);
-
-
-      if (
-        !amount ||
-        amount <= 0
-      ) {
-
-        alert(
-          "Please enter a valid amount."
-        );
-
+      if (input.value.trim() === "" || isNaN(amount)) {
+        errorEl.textContent = "Please enter a valid amount.";
+        errorEl.style.display = "block";
         return;
-
       }
 
+      if (amount <= 0) {
+        errorEl.textContent = "Amount must be greater than zero.";
+        errorEl.style.display = "block";
+        return;
+      }
 
-      selectedAmount = amount;
+      if (amount > MAX_AMOUNT) {
+        errorEl.textContent = `Maximum amount per recharge is $${MAX_AMOUNT}.`;
+        errorEl.style.display = "block";
+        return;
+      }
+
+      // Arrondi à 2 décimales pour éviter les erreurs de virgule flottante
+      selectedAmount = Math.round(amount * 100) / 100;
 
       paymentPage();
 
@@ -691,144 +594,51 @@
 
     function paymentPage() {
 
-
       let methods = [
-
-        {
-          name: "MonCash",
-          description:
-            "For customers in Haiti or Dominican Republic"
-        },
-
-        {
-          name: "Banco Popular",
-          description:
-            "For customers living in Dominican Republic"
-        },
-
-        {
-          name: "USDC / Base",
-          description:
-            "Pay with USDC on Base network"
-        },
-
-        {
-          name: "PayPal",
-          description:
-            "Pay using PayPal"
-        }
-
+        { name: "MonCash", description: "For customers in Haiti or Dominican Republic" },
+        { name: "Banco Popular", description: "For customers living in Dominican Republic" },
+        { name: "USDC / Base", description: "Pay with USDC on Base network" },
+        { name: "PayPal", description: "Pay using PayPal" }
       ];
 
-
-      // ======================================
-      // IMPORTANT RULES
-      // ======================================
-
-      // PayPal cannot be used
-      // to recharge PayPal.
-
-      if (
-        selectedService === "PayPal"
-      ) {
-
-        methods =
-          methods.filter(
-            method =>
-              method.name !== "PayPal"
-          );
-
+      // PayPal cannot be used to recharge PayPal.
+      if (selectedService === "PayPal") {
+        methods = methods.filter(method => method.name !== "PayPal");
       }
 
-
-      // USDC/Base cannot be used
-      // to recharge USDC/Base.
-
-      if (
-        selectedService === "USDC/Base"
-      ) {
-
-        methods =
-          methods.filter(
-            method =>
-              method.name !== "USDC / Base"
-          );
-
+      // USDC/Base cannot be used to recharge USDC/Base.
+      if (selectedService === "USDC/Base") {
+        methods = methods.filter(method => method.name !== "USDC / Base");
       }
-
 
       document.getElementById("app").innerHTML = `
 
-        <header>
-
-          <div class="logo">
-            GONAF<span>+</span>
-          </div>
-
-        </header>
-
+        ${renderHeader()}
 
         <main class="page">
 
-          <button
-            class="back"
-            onclick="amountPage()"
-          >
-            ← Back
-          </button>
-
+          <button class="back" onclick="amountPage()">← Back</button>
 
           <div class="box">
 
-            <div class="badge">
-              PAYMENT METHOD
-            </div>
+            <div class="badge">PAYMENT METHOD</div>
 
-
-            <h1>
-              Choose how to pay
-            </h1>
-
+            <h1>Choose how to pay</h1>
 
             <p>
-              Recharge
-              <strong>
-                ${selectedService}
-              </strong>
-
+              Recharge <strong>${selectedService}</strong>
               <br>
-
-              Amount:
-              <strong>
-                $${selectedAmount.toFixed(2)}
-              </strong>
+              Amount: <strong>$${selectedAmount.toFixed(2)}</strong>
             </p>
-
 
             <div style="margin-top:25px;">
 
-              ${methods
-                .map(
-                  method => `
-
-                    <button
-                      class="payment-card"
-                      onclick="selectPayment('${method.name}')"
-                    >
-
-                      <strong>
-                        ${method.name}
-                      </strong>
-
-                      <span>
-                        ${method.description}
-                      </span>
-
+              ${methods.map(method => `
+                    <button class="payment-card" onclick="selectPayment('${method.name}')">
+                      <strong>${method.name}</strong>
+                      <span>${method.description}</span>
                     </button>
-
-                  `
-                )
-                .join("")}
+                  `).join("")}
 
             </div>
 
@@ -848,7 +658,6 @@
     function selectPayment(method) {
 
       selectedPayment = method;
-
       confirmationPage();
 
     }
@@ -862,92 +671,38 @@
 
       document.getElementById("app").innerHTML = `
 
-        <header>
-
-          <div class="logo">
-            GONAF<span>+</span>
-          </div>
-
-        </header>
-
+        ${renderHeader()}
 
         <main class="page">
 
-          <button
-            class="back"
-            onclick="paymentPage()"
-          >
-            ← Back
-          </button>
-
+          <button class="back" onclick="paymentPage()">← Back</button>
 
           <div class="box">
 
-            <div class="badge">
-              ORDER SUMMARY
-            </div>
+            <div class="badge">ORDER SUMMARY</div>
 
-
-            <h1>
-              Confirm your order
-            </h1>
-
+            <h1>Confirm your order</h1>
 
             <div class="summary">
 
-
               <div class="summary-row">
-
-                <small>
-                  Service
-                </small>
-
-                <br>
-
-                <strong>
-                  Recharge ${selectedService}
-                </strong>
-
+                <small>Service</small><br>
+                <strong>Recharge ${selectedService}</strong>
               </div>
 
-
               <div class="summary-row">
-
-                <small>
-                  Amount
-                </small>
-
-                <br>
-
-                <strong>
-                  $${selectedAmount.toFixed(2)}
-                </strong>
-
+                <small>Amount</small><br>
+                <strong>$${selectedAmount.toFixed(2)}</strong>
               </div>
 
-
               <div class="summary-row">
-
-                <small>
-                  Payment method
-                </small>
-
-                <br>
-
-                <strong>
-                  ${selectedPayment}
-                </strong>
-
+                <small>Payment method</small><br>
+                <strong>${selectedPayment}</strong>
               </div>
-
 
             </div>
 
-
-            <button
-              class="primary"
-              onclick="createOrder()"
-            >
+            <button class="primary" onclick="createOrder()">
               Confirm Order
             </button>
 
@@ -964,24 +719,29 @@
     // CREATE ORDER
     // =========================================
 
+    function generateOrderId() {
+
+      // Combine timestamp (unique par milliseconde) + suffixe aléatoire
+      // pour réduire fortement le risque de collision par rapport
+      // à Math.random() seul.
+      const timestamp = Date.now().toString(36).toUpperCase();
+      const randomPart = Math.floor(1000 + Math.random() * 9000);
+
+      return "GNF-" + timestamp + "-" + randomPart;
+
+    }
+
     function createOrder() {
 
-      const random =
-        Math.floor(
-          100000 +
-          Math.random() * 900000
-        );
-
-
-      const orderId =
-        "GNF-" + random;
-
+      const orderId = generateOrderId();
 
       document.getElementById("app").innerHTML = `
 
+        ${renderHeader()}
+
         <main
           style="
-            min-height:100vh;
+            min-height: calc(100vh - 70px);
             display:flex;
             align-items:center;
             justify-content:center;
@@ -989,34 +749,13 @@
           "
         >
 
-          <div
-            class="box"
-            style="
-              width:100%;
-              max-width:500px;
-              text-align:center;
-            "
-          >
+          <div class="box" style="width:100%; max-width:500px; text-align:center;">
 
-            <div
-              style="
-                font-size:55px;
-                margin-bottom:15px;
-              "
-            >
-              ✓
-            </div>
+            <div style="font-size:55px; margin-bottom:15px;">✓</div>
 
+            <h1>Order Created</h1>
 
-            <h1>
-              Order Created
-            </h1>
-
-
-            <p>
-              Your recharge order has been created.
-            </p>
-
+            <p>Your recharge order has been created.</p>
 
             <div
               style="
@@ -1025,56 +764,26 @@
                 background:#f5f5f5;
                 border-radius:14px;
                 font-weight:bold;
-                font-size:20px;
+                font-size:18px;
+                word-break: break-all;
               "
             >
               ${orderId}
             </div>
 
-
-            <div
-              style="
-                text-align:left;
-                line-height:2;
-              "
-            >
-
-              <strong>
-                Service:
-              </strong>
-
-              Recharge ${selectedService}
-
-              <br>
-
-
-              <strong>
-                Amount:
-              </strong>
-
-              $${selectedAmount.toFixed(2)}
-
-              <br>
-
-
-              <strong>
-                Payment:
-              </strong>
-
-              ${selectedPayment}
-
+            <div style="text-align:left; line-height:2;">
+              <strong>Service:</strong> Recharge ${selectedService}<br>
+              <strong>Amount:</strong> $${selectedAmount.toFixed(2)}<br>
+              <strong>Payment:</strong> ${selectedPayment}
             </div>
 
-
-            <p
-              style="
-                margin-top:25px;
-                font-size:13px;
-              "
-            >
-              Payment instructions will be connected
-              in the next step.
+            <p style="margin-top:25px; font-size:13px;">
+              Payment instructions will be connected in the next step.
             </p>
+
+            <button class="secondary" onclick="home()">
+              Make another recharge
+            </button>
 
           </div>
 
@@ -1096,4 +805,5 @@
 
 </body>
 
-                  </html>
+  </html>
+  
