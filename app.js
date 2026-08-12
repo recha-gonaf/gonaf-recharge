@@ -621,3 +621,6 @@ function createOrder() {
   `;
 
             }
+window.choosePayment = choosePayment;
+window.selectPayment = selectPayment;
+window.createOrder = createOrder;
