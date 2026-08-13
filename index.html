@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>GONAF+ Recharge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ============================================================
+   GONAF+ RECHARGE — Design tokens
+   Palette: deep midnight base, teal→blue signature gradient,
+   warm gold used only for the single "confirm/success" accent.
+   ============================================================ */
+:root{
+  --bg-0:#060912;
+  --bg-1:#0c1220;
+  --bg-2:#111a2e;
+  --glass:rgba(255,255,255,.055);
+  --glass-strong:rgba(255,255,255,.09);
+  --glass-border:rgba(255,255,255,.12);
+  --glass-border-hi:rgba(255,255,255,.22);
+  --accent-1:#22d3c9;
+  --accent-2:#4f7cff;
+  --accent-grad:linear-gradient(135deg,var(--accent-1),var(--accent-2));
+  --gold:#f0b93d;
+  --text-0:#f4f7fc;
+  --text-1:#aab4cc;
+  --text-2:#6d7791;
+  --danger:#ff6b6b;
+  --danger-bg:rgba(255,107,107,.1);
+  --success:#34d399;
+  --radius-lg:26px;
+  --radius-md:18px;
+  --radius-sm:12px;
+  --font-display:'Space Grotesk',sans-serif;
+  --font-body:'Inter',sans-serif;
+  --font-mono:'IBM Plex Mono',monospace;
+  --shadow-soft:0 20px 60px -20px rgba(0,0,0,.6);
+  --shadow-lift:0 30px 80px -24px rgba(34,211,201,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  min-height:100vh;
+  font-family:var(--font-body);
+  color:var(--text-0);
+  background:
+    radial-gradient(1100px 600px at 12% -10%, rgba(34,211,201,.16), transparent 60%),
+    radial-gradient(900px 500px at 90% 0%, rgba(79,124,255,.14), transparent 55%),
+    radial-gradient(700px 500px at 50% 110%, rgba(240,185,61,.06), transparent 60%),
+    linear-gradient(180deg, var(--bg-0), var(--bg-1) 40%, var(--bg-0));
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.display{font-family:var(--font-display);letter-spacing:-0.01em}
+.mono{font-family:var(--font-mono)}
+button{font-family:inherit}
+::selection{background:rgba(34,211,201,.35)}
+:focus-visible{outline:2px solid var(--accent-1);outline-offset:2px;border-radius:8px}
+
+/* ---------- layout shells ---------- */
+.app-shell{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+.glass{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);
+  backdrop-filter:blur(22px) saturate(140%);
+  -webkit-backdrop-filter:blur(22px) saturate(140%);
+  box-shadow:var(--shadow-soft);
+}
+.glass-panel{padding:28px}
+@media(max-width:640px){.glass-panel{padding:20px}}
+
+/* ---------- header ---------- */
+header.topbar{
+  position:sticky;top:0;z-index:40;
+  backdrop-filter:blur(16px);
+  background:linear-gradient(180deg, rgba(6,9,18,.85), rgba(6,9,18,.4));
+  border-bottom:1px solid var(--glass-border);
+}
+.topbar-inner{
+  max-width:1080px;margin:0 auto;padding:16px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;background:none;border:none;padding:0}
+.logo-img{height:38px;width:auto;display:block;object-fit:contain}
+.card-logo{height:52px;width:52px;object-fit:contain}
+.orb img{height:32px;width:32px;object-fit:contain}
+.lang-switch{display:flex;gap:4px;background:var(--glass);border:1px solid var(--glass-border);border-radius:999px;padding:4px}
+.lang-btn{
+  border:none;background:transparent;color:var(--text-1);
+  padding:7px 14px;border-radius:999px;font-weight:600;font-size:13px;
+  cursor:pointer;transition:all .2s ease;
+}
+.lang-btn.active{background:var(--accent-grad);color:#04141a}
+
+/* ---------- hero / home ---------- */
+.hero{padding:56px 0 20px;text-align:center;position:relative}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent-1);background:rgba(34,211,201,.1);
+  border:1px solid rgba(34,211,201,.25);padding:6px 14px;border-radius:999px;
+  margin-bottom:20px;
+}
+.hero h1{font-size:clamp(30px,5vw,48px);font-weight:700;margin:0 0 14px;line-height:1.08}
+.hero h1 .grad{background:var(--accent-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--text-1);font-size:16px;max-width:520px;margin:0 auto 8px;line-height:1.55}
+
+.icon-stack{
+  display:flex;justify-content:center;gap:14px;flex-wrap:wrap;
+  margin:36px 0 8px;perspective:900px;
+}
+.orb{
+  width:64px;height:64px;border-radius:20px;
+  background:var(--glass-strong);border:1px solid var(--glass-border-hi);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:15px;
+  transition:transform .18s ease, box-shadow .18s ease;
+  box-shadow:0 14px 30px -14px rgba(0,0,0,.6);
+  will-change:transform;
+}
+
+/* ---------- steps / wizard ---------- */
+.step-header{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.back-btn{
+  width:40px;height:40px;border-radius:12px;border:1px solid var(--glass-border);
+  background:var(--glass);color:var(--text-0);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  transition:all .15s ease;flex-shrink:0;
+}
+.back-btn:hover{background:var(--glass-strong);border-color:var(--glass-border-hi)}
+.step-title{font-size:22px;font-weight:700;margin:0}
+.step-sub{color:var(--text-1);font-size:13.5px;margin:2px 0 0}
+.progress-track{height:4px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:28px}
+.progress-fill{height:100%;background:var(--accent-grad);border-radius:99px;transition:width .35s ease}
+
+.grid{display:grid;gap:14px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:560px){.grid-3{grid-template-columns:repeat(2,1fr)}}
+
+.card-select{
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:var(--radius-md);padding:20px 16px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;
+  transition:transform .15s ease, border-color .15s ease, background .15s ease;
+}
+.card-select:hover{transform:translateY(-3px);border-color:var(--glass-border-hi);background:var(--glass-strong)}
+.card-select.selected{border-color:var(--accent-1);background:rgba(34,211,201,.09);box-shadow:0 0 0 1px var(--accent-1) inset}
+.card-badge{
+  width:52px;height:52px;border-radius:16px;background:var(--accent-grad);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;color:#04141a;font-size:16px;
+}
+.card-name{font-weight:600;font-size:14.5px}
+.card-note{font-size:11.5px;color:var(--text-2)}
+
+/* ---------- forms ---------- */
+label.field-label{display:block;font-size:13px;font-weight:600;color:var(--text-1);margin:0 0 7px}
+.field-hint{font-size:12px;color:var(--text-2);margin-top:6px}
+.field-error{font-size:12.5px;color:var(--danger);margin-top:6px;display:none}
+.field-wrap.invalid .field-error{display:block}
+.field-wrap.invalid input,.field-wrap.invalid textarea{border-color:var(--danger) !important}
+.field-wrap{margin-bottom:18px}
+input[type=text],input[type=email],input[type=tel],input[type=number],textarea{
+  width:100%;padding:13px 14px;border-radius:var(--radius-sm);
+  background:rgba(255,255,255,.04);border:1px solid var(--glass-border);
+  color:var(--text-0);font-size:14.5px;font-family:inherit;transition:border-color .15s ease, background .15s ease;
+}
+input::placeholder,textarea::placeholder{color:var(--text-2)}
+input:focus,textarea:focus{border-color:var(--accent-1);background:rgba(255,255,255,.06);outline:none}
+.amount-input-wrap{position:relative}
+.amount-input-wrap .prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-1);font-weight:600;font-family:var(--font-mono)}
+.amount-input-wrap input{padding-left:32px;font-family:var(--font-mono);font-size:20px;font-weight:600}
+.checkbox-row{display:flex;gap:10px;align-items:flex-start;padding:14px;background:rgba(255,255,255,.03);border:1px solid var(--glass-border);border-radius:var(--radius-sm)}
+.checkbox-row input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent-1);flex-shrink:0}
+.checkbox-row span{font-size:13px;color:var(--text-1);line-height:1.5}
+.warning-box{
+  background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);
+  color:#ffb3b3;font-size:13px;line-height:1.5;padding:14px 16px;border-radius:var(--radius-sm);margin-bottom:18px;
+}
+.info-box{
+  background:rgba(79,124,255,.08);border:1px solid rgba(79,124,255,.28);
+  color:#c3d0ff;font-size:13px;line-height:1.5;padding:14px 16px;border-radius:var(--radius-sm);margin-bottom:18px;
+}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 22px;border-radius:14px;font-weight:600;font-size:14.5px;
+  cursor:pointer;border:none;transition:transform .12s ease, box-shadow .12s ease, opacity .15s ease;
+  width:100%;
+}
+.btn-primary{background:var(--accent-grad);color:#04141a;box-shadow:0 16px 40px -14px rgba(34,211,201,.5)}
+.btn-primary:hover:not(:disabled){transform:translateY(-2px)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn-ghost{background:var(--glass);color:var(--text-0);border:1px solid var(--glass-border)}
+.btn-ghost:hover{background:var(--glass-strong)}
+.btn-sm{width:auto;padding:9px 14px;font-size:12.5px;border-radius:10px}
+.btn-row{display:flex;gap:12px;margin-top:26px}
+.btn-row .btn-ghost{width:auto;flex:0 0 auto}
+.btn-row .btn-primary{flex:1}
+
+/* ---------- summary / instructions ---------- */
+.kv-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:14px}
+.kv-row:last-child{border-bottom:none}
+.kv-label{color:var(--text-1)}
+.kv-value{font-family:var(--font-mono);font-weight:600}
+.kv-total{font-size:17px}
+.kv-total .kv-value{color:var(--accent-1)}
+.pay-info-row{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:13px 14px;background:rgba(255,255,255,.03);border:1px solid var(--glass-border);
+  border-radius:var(--radius-sm);margin-bottom:10px;
+}
+.pay-info-row .label{font-size:11.5px;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+.pay-info-row .val{font-family:var(--font-mono);font-size:14px;font-weight:600;word-break:break-all}
+.copy-btn{
+  flex-shrink:0;width:36px;height:36px;border-radius:10px;border:1px solid var(--glass-border);
+  background:rgba(255,255,255,.05);color:var(--text-0);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s ease;
+}
+.copy-btn:hover{background:var(--glass-strong)}
+.copy-btn.copied{background:rgba(52,211,153,.18);border-color:var(--success);color:var(--success)}
+
+/* ---------- upload ---------- */
+.drop-zone{
+  border:1.5px dashed var(--glass-border-hi);border-radius:var(--radius-md);
+  padding:36px 20px;text-align:center;cursor:pointer;transition:all .15s ease;
+  background:rgba(255,255,255,.02);
+}
+.drop-zone:hover{border-color:var(--accent-1);background:rgba(34,211,201,.05)}
+.drop-zone svg{margin-bottom:10px;opacity:.7}
+.drop-zone .dz-title{font-weight:600;font-size:14.5px;margin-bottom:4px}
+.drop-zone .dz-sub{font-size:12.5px;color:var(--text-2)}
+.preview-card{display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,.03);border:1px solid var(--glass-border);border-radius:var(--radius-md)}
+.preview-card img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid var(--glass-border)}
+.preview-meta{flex:1;min-width:0}
+.preview-meta .fname{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.preview-meta .fsize{font-size:12px;color:var(--text-2)}
+.remove-btn{background:none;border:none;color:var(--danger);cursor:pointer;font-size:13px;font-weight:600;padding:6px}
+
+/* ---------- success ---------- */
+.success-wrap{text-align:center;padding:20px 0}
+.success-icon{
+  width:84px;height:84px;border-radius:50%;background:rgba(52,211,153,.14);
+  border:1px solid rgba(52,211,153,.4);display:flex;align-items:center;justify-content:center;
+  margin:0 auto 22px;
+}
+.order-id-chip{
+  display:inline-block;font-family:var(--font-mono);font-weight:600;font-size:15px;
+  background:rgba(255,255,255,.05);border:1px solid var(--glass-border);
+  padding:10px 18px;border-radius:12px;margin:16px 0 24px;letter-spacing:.02em;
+}
+
+/* ---------- footer ---------- */
+footer{text-align:center;padding:36px 20px 20px;color:var(--text-2);font-size:12.5px}
+footer a{color:var(--text-1);text-decoration:none;cursor:pointer}
+footer a:hover{color:var(--accent-1)}
+
+/* ---------- admin ---------- */
+.admin-lock{max-width:400px;margin:80px auto}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(4,20,26,.35);border-top-color:#04141a;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--glass-strong);border:1px solid var(--glass-border-hi);backdrop-filter:blur(20px);
+  padding:13px 20px;border-radius:14px;font-size:13.5px;z-index:100;box-shadow:var(--shadow-soft);
+  max-width:90vw;text-align:center;
+}
+.toast.err{border-color:rgba(255,107,107,.5);color:#ffb3b3}
+.center-loader{display:flex;flex-direction:column;align-items:center;gap:14px;padding:60px 20px;color:var(--text-1)}
+.ring{width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.12);border-top-color:var(--accent-1);animation:spin .8s linear infinite}
+.fade-in{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <button class="logo" id="logoBtn" aria-label="GONAF+">
+      <img class="logo-img" src="./images/logo.png" alt="GONAF+">
+    </button>
+    <div class="lang-switch" role="group" aria-label="Language">
+      <button class="lang-btn" data-lang="fr" id="langFr">FR</button>
+      <button class="lang-btn" data-lang="ht" id="langHt">HT</button>
+    </div>
+  </div>
+</header>
+
+<main class="app-shell" id="app"></main>
+
+<footer>
+  <span id="footerText">GONAF+ — Recharge rapide et sécurisée.</span>
+  &nbsp;·&nbsp;<a id="adminLink">Admin</a>
+</footer>
+
+<div id="toastHost"></div>
+
+<script>
+/* ============================================================
+   CONFIG — Supabase
+   This is a fully static frontend: no build step, no .env,
+   no server. The public/publishable anon key below is safe to
+   ship in client code — it is the key Supabase designs for
+   exactly this purpose. Row Level Security policies on the
+   `orders`, `settings` tables and the `payment-proofs` bucket
+   are what actually control what this key is allowed to do.
+   ============================================================ */
+const SUPABASE_URL = "https://qupcrthkmdiburmhzgnr.supabase.co";
+// Paste your Supabase project's public anon/publishable key below
+// (Project Settings → API → "anon public" key). Never put the
+// service_role key here.
+const SUPABASE_ANON_KEY = "PASTE_YOUR_SUPABASE_ANON_PUBLIC_KEY_HERE";
+
+let sb = null;
+try{
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}catch(e){ console.error("Supabase init error:", e); }
+
+/* ============================================================
+   I18N
+   ============================================================ */
+const I18N = {
+fr:{
+  footer:"GONAF+ — Recharge rapide et sécurisée.",
+  admin:"Admin",
+  configError:"Configuration manquante. Le service n'est pas encore prêt à recevoir des commandes.",
+  settingsError:"Impossible de charger les paramètres du service. Veuillez réessayer dans quelques instants.",
+  retry:"Réessayer",
+  heroEyebrow:"Recharge en quelques minutes",
+  heroTitle:"Rechargez vos comptes en toute", heroTitleGrad:"confiance",
+  heroSub:"Wise, Pana, Meru, PayPal, Cash App, USDC — payez avec MonCash, Banco Popular, USDC ou PayPal.",
+  chooseService:"Choisissez le service à recharger",
+  step:"Étape",
+  of:"sur",
+  back:"Retour",
+  continue:"Continuer",
+  amountTitle:"Montant de la recharge",
+  amountSub:"Entrez le montant en dollars américains (USD)",
+  amountLabel:"Montant (USD)",
+  amountPlaceholder:"Ex : 50",
+  min:"Minimum",
+  max:"Maximum",
+  recharge:"Montant de la recharge",
+  fee:"Frais GONAF+",
+  total:"Total à payer",
+  amountTooLow:"Le montant doit être d'au moins",
+  amountTooHigh:"Le montant ne peut pas dépasser",
+  amountRequired:"Veuillez entrer un montant valide",
+  custTitle:"Vos informations",
+  custSub:"Ces informations serviront à traiter votre recharge",
+  fullName:"Nom et Prénom",
+  fullNamePh:"Ex : Jean Baptiste",
+  fullNameErr:"Le nom complet est requis",
+  wiseTag:"WiseTag",
+  wiseTagPh:"Ex : @jean.baptiste",
+  wiseTagErr:"Le WiseTag est requis",
+  wiseEmail:"Email Wise",
+  wiseEmailPh:"exemple@email.com",
+  wiseEmailErr:"Un email Wise valide est requis",
+  meruTag:"MeruTag",
+  meruTagPh:"Ex : @jean.baptiste",
+  meruEmail:"Email Meru",
+  meruEmailPh:"exemple@email.com",
+  meruErr:"Le MeruTag ou l'email Meru est requis",
+  paypalEmail:"Email PayPal",
+  paypalEmailPh:"exemple@email.com",
+  paypalEmailErr:"Un email PayPal valide est requis",
+  panaEmail:"Email",
+  panaEmailPh:"exemple@email.com",
+  panaEmailErr:"Un email valide est requis",
+  panaPhone:"Téléphone",
+  panaPhonePh:"Ex : +509 1234-5678",
+  panaPhoneErr:"Un numéro de téléphone valide est requis",
+  cashTag:"Cash App Tag",
+  cashTagPh:"Ex : $jeanbaptiste",
+  cashPhone:"Téléphone",
+  cashPhonePh:"Ex : +509 1234-5678",
+  cashEmail:"Email",
+  cashEmailPh:"exemple@email.com",
+  cashErr:"Le tag Cash App, le téléphone ou l'email est requis (au moins un)",
+  usdcAddress:"Adresse portefeuille USDC (réseau Base)",
+  usdcAddressPh:"0x...",
+  usdcAddressErr:"Adresse invalide. Format requis : 0x suivi de 40 caractères hexadécimaux",
+  usdcWarning:"Seul l'USDC sur le réseau Base est accepté. Envoyer des fonds à la mauvaise adresse ou sur le mauvais réseau peut entraîner une perte permanente de fonds.",
+  usdcConfirm:"Je confirme avoir lu l'avertissement ci-dessus et que mon adresse est correcte pour le réseau Base.",
+  usdcConfirmErr:"Veuillez confirmer que vous avez lu l'avertissement",
+  payMethodTitle:"Méthode de paiement",
+  payMethodSub:"Comment souhaitez-vous payer ?",
+  instrTitle:"Instructions de paiement",
+  instrSub:"Effectuez le paiement en suivant les instructions ci-dessous",
+  copy:"Copier",
+  copied:"Copié",
+  exchangeRate:"Taux de change",
+  totalUsd:"Total (USD)",
+  totalLocal:"Total à payer",
+  usdcOnly:"USDC UNIQUEMENT SUR LE RÉSEAU BASE",
+  network:"Réseau",
+  address:"Adresse",
+  name:"Nom",
+  phone:"Téléphone",
+  reference:"Référence",
+  bank:"Banque",
+  beneficiary:"Bénéficiaire",
+  currencyLabel:"Devise",
+  accountType:"Type de compte",
+  account:"Compte",
+  email:"Email",
+  uploadTitle:"Preuve de paiement",
+  uploadSub:"Téléversez une capture d'écran ou une photo de votre paiement",
+  dzTitle:"Cliquez ou glissez votre fichier ici",
+  dzSub:"JPG, JPEG, PNG ou WEBP — 5 Mo maximum",
+  remove:"Supprimer",
+  uploadRequired:"La preuve de paiement est requise",
+  fileTooLarge:"Le fichier dépasse 5 Mo",
+  fileTypeInvalid:"Format non supporté. Utilisez JPG, JPEG, PNG ou WEBP",
+  summaryTitle:"Récapitulatif de la commande",
+  summarySub:"Vérifiez les détails avant de confirmer",
+  service:"Service",
+  paymentMethod:"Méthode de paiement",
+  customerInfo:"Informations client",
+  confirmOrder:"Confirmer la commande",
+  creating:"Création en cours...",
+  uploadingProof:"Téléversement de la preuve...",
+  submitError:"Une erreur est survenue. Veuillez réessayer.",
+  uploadError:"Le téléversement de la preuve a échoué. Veuillez réessayer.",
+  successTitle:"Commande créée avec succès !",
+  successSub:"Votre commande a été reçue et est en attente de traitement. Vous recevrez une confirmation une fois le paiement vérifié.",
+  orderIdLabel:"Numéro de commande",
+  status:"Statut",
+  statusPending:"En attente",
+  newOrder:"Nouvelle commande",
+  adminTitle:"Administration",
+  adminPasswordTitle:"Connexion administrateur",
+  adminEmail:"Email",
+  adminPassword:"Mot de passe",
+  adminLogin:"Se connecter",
+  adminLoginError:"Identifiants incorrects",
+  adminSettingsTitle:"Paramètres du service",
+  adminSave:"Enregistrer",
+  adminSaved:"Paramètres enregistrés",
+  adminSaveError:"Échec de l'enregistrement",
+  adminLogout:"Déconnexion",
+  minAmount:"Montant minimum (USD)",
+  maxAmount:"Montant maximum (USD)",
+  feePercent:"Frais GONAF+ (%)",
+  htgRate:"Taux USD → HTG",
+  dopRate:"Taux USD → DOP",
+  atLeastOne:"au moins un requis"
+},
+ht:{
+  footer:"GONAF+ — Rechaj rapid ak an sekirite.",
+  admin:"Admin",
+  configError:"Konfigirasyon pa disponib. Sèvis la poko pare pou resevwa kòmand.",
+  settingsError:"Nou pa kapab chaje paramèt sèvis la. Tanpri eseye ankò nan kèk moman.",
+  retry:"Eseye ankò",
+  heroEyebrow:"Rechaj nan kèk minit",
+  heroTitle:"Rechaje kont ou yo ak", heroTitleGrad:"konfyans",
+  heroSub:"Wise, Pana, Meru, PayPal, Cash App, USDC — peye ak MonCash, Banco Popular, USDC oswa PayPal.",
+  chooseService:"Chwazi sèvis ou vle rechaje a",
+  step:"Etap",
+  of:"sou",
+  back:"Retounen",
+  continue:"Kontinye",
+  amountTitle:"Montan rechaj la",
+  amountSub:"Antre montan an nan dola ameriken (USD)",
+  amountLabel:"Montan (USD)",
+  amountPlaceholder:"Egz: 50",
+  min:"Minimòm",
+  max:"Maksimòm",
+  recharge:"Montan rechaj la",
+  fee:"Frè GONAF+",
+  total:"Total pou peye",
+  amountTooLow:"Montan an dwe omwen",
+  amountTooHigh:"Montan an pa ka depase",
+  amountRequired:"Tanpri antre yon montan valab",
+  custTitle:"Enfòmasyon ou",
+  custSub:"Enfòmasyon sa yo ap sèvi pou trete rechaj ou",
+  fullName:"Non ak Prenon",
+  fullNamePh:"Egz: Jean Baptiste",
+  fullNameErr:"Non konplè a obligatwa",
+  wiseTag:"WiseTag",
+  wiseTagPh:"Egz: @jean.baptiste",
+  wiseTagErr:"WiseTag a obligatwa",
+  wiseEmail:"Imèl Wise",
+  wiseEmailPh:"egzanp@imel.com",
+  wiseEmailErr:"Yon imèl Wise valab obligatwa",
+  meruTag:"MeruTag",
+  meruTagPh:"Egz: @jean.baptiste",
+  meruEmail:"Imèl Meru",
+  meruEmailPh:"egzanp@imel.com",
+  meruErr:"MeruTag oswa imèl Meru obligatwa",
+  paypalEmail:"Imèl PayPal",
+  paypalEmailPh:"egzanp@imel.com",
+  paypalEmailErr:"Yon imèl PayPal valab obligatwa",
+  panaEmail:"Imèl",
+  panaEmailPh:"egzanp@imel.com",
+  panaEmailErr:"Yon imèl valab obligatwa",
+  panaPhone:"Telefòn",
+  panaPhonePh:"Egz: +509 1234-5678",
+  panaPhoneErr:"Yon nimewo telefòn valab obligatwa",
+  cashTag:"Cash App Tag",
+  cashTagPh:"Egz: $jeanbaptiste",
+  cashPhone:"Telefòn",
+  cashPhonePh:"Egz: +509 1234-5678",
+  cashEmail:"Imèl",
+  cashEmailPh:"egzanp@imel.com",
+  cashErr:"Cash App tag, telefòn oswa imèl obligatwa (omwen youn)",
+  usdcAddress:"Adrès pòtfèy USDC (rezo Base)",
+  usdcAddressPh:"0x...",
+  usdcAddressErr:"Adrès envalid. Fòma obligatwa: 0x swiv pa 40 karaktè eksadesimal",
+  usdcWarning:"Se sèlman USDC sou rezo Base ki aksepte. Voye lajan nan move adrès oswa move rezo ka lakòz pèt total lajan an, san posiblite pou rekipere l.",
+  usdcConfirm:"Mwen konfime mwen li avètisman anwo a e adrès mwen an kòrèk pou rezo Base.",
+  usdcConfirmErr:"Tanpri konfime ou li avètisman an",
+  payMethodTitle:"Metòd peman",
+  payMethodSub:"Kijan ou vle peye?",
+  instrTitle:"Enstriksyon peman",
+  instrSub:"Fè peman an swiv enstriksyon anba a",
+  copy:"Kopye",
+  copied:"Kopye",
+  exchangeRate:"To echanj",
+  totalUsd:"Total (USD)",
+  totalLocal:"Total pou peye",
+  usdcOnly:"SÈLMAN USDC SOU REZO BASE",
+  network:"Rezo",
+  address:"Adrès",
+  name:"Non",
+  phone:"Telefòn",
+  reference:"Referans",
+  bank:"Bank",
+  beneficiary:"Benefisyè",
+  currencyLabel:"Lajan",
+  accountType:"Kalite kont",
+  account:"Kont",
+  email:"Imèl",
+  uploadTitle:"Prèv peman",
+  uploadSub:"Telechaje yon kapti oswa foto peman ou",
+  dzTitle:"Klike oswa depoze fichye ou isit la",
+  dzSub:"JPG, JPEG, PNG oswa WEBP — 5 Mo maksimòm",
+  remove:"Retire",
+  uploadRequired:"Prèv peman an obligatwa",
+  fileTooLarge:"Fichye a depase 5 Mo",
+  fileTypeInvalid:"Fòma pa sipòte. Itilize JPG, JPEG, PNG oswa WEBP",
+  summaryTitle:"Rezime kòmand lan",
+  summarySub:"Verifye detay yo anvan ou konfime",
+  service:"Sèvis",
+  paymentMethod:"Metòd peman",
+  customerInfo:"Enfòmasyon kliyan",
+  confirmOrder:"Konfime kòmand lan",
+  creating:"Kreyasyon ankou...",
+  uploadingProof:"Telechajman prèv la...",
+  submitError:"Yon erè fèt. Tanpri eseye ankò.",
+  uploadError:"Telechajman prèv la echwe. Tanpri eseye ankò.",
+  successTitle:"Kòmand kreye avèk siksè!",
+  successSub:"Nou resevwa kòmand ou an, l ap tann trètman. Ou ap resevwa yon konfimasyon lè peman an verifye.",
+  orderIdLabel:"Nimewo kòmand",
+  status:"Estati",
+  statusPending:"An tan",
+  newOrder:"Nouvo kòmand",
+  adminTitle:"Administrasyon",
+  adminPasswordTitle:"Koneksyon administratè",
+  adminEmail:"Imèl",
+  adminPassword:"Modpas",
+  adminLogin:"Konekte",
+  adminLoginError:"Enfòmasyon yo pa kòrèk",
+  adminSettingsTitle:"Paramèt sèvis la",
+  adminSave:"Anrejistre",
+  adminSaved:"Paramèt anrejistre",
+  adminSaveError:"Anrejistreman echwe",
+  adminLogout:"Dekonekte",
+  minAmount:"Montan minimòm (USD)",
+  maxAmount:"Montan maksimòm (USD)",
+  feePercent:"Frè GONAF+ (%)",
+  htgRate:"To USD → HTG",
+  dopRate:"To USD → DOP",
+  atLeastOne:"omwen youn obligatwa"
+}
+};
+
+/* ============================================================
+   DATA
+   ============================================================ */
+const SERVICES = [
+  {id:"wise", name:"Wise", badge:"W", logo:"./images/wise.png"},
+  {id:"pana", name:"Pana", badge:"Pa", logo:"./images/pana.png"},
+  {id:"meru", name:"Meru", badge:"Me", logo:"./images/meru.png"},
+  {id:"paypal", name:"PayPal", badge:"Pp", logo:"./images/paypal.png"},
+  {id:"cashapp", name:"Cash App", badge:"$", logo:"./images/cashapp.png"},
+  {id:"usdc", name:"USDC / Base", badge:"Ⓤ", logo:"./images/usdc.png"}
+];
+
+const PAYMENT_METHODS = [
+  {id:"moncash", name:"MonCash", badge:"MC", logo:"./images/moncash.png"},
+  {id:"bancopopular", name:"Banco Popular", badge:"BP", logo:"./images/banco-popular.png"},
+  {id:"usdc", name:"USDC / Base", badge:"Ⓤ", logo:"./images/usdc.png"},
+  {id:"paypal", name:"PayPal", badge:"Pp", logo:"./images/paypal.png"}
+];
+
+const PAYMENT_INFO = {
+  moncash:{ name:"Berlandina Descieux", phone:"+509 3897-1619" },
+  bancopopular:{
+    reference:"556221", bank:"Banco Popular", beneficiary:"I-Pay",
+    currency:"USD ou DOP", accountType:"Corriente", rnc:"133-49568-6", account:"0852556430"
+  },
+  usdc:{ network:"Base", address:"0xbc4c2D16d057e86805AB25B55406A0f9172ab602" },
+  paypal:{ email:"hermitemarie@gmail.com", name:"Guerrier Yolla R." }
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  lang: localStorage.getItem("gonaf_lang") || "fr",
+  route: "home", // home | amount | customer | payment | instructions | upload | summary | success | admin
+  history: [],
+  settings: null,
+  settingsError: null,
+  order: {
+    service: null,
+    amountUsd: null,
+    fee: 0,
+    total: 0,
+    customer: {},
+    paymentMethod: null,
+    currency: "USD",
+    exchangeRate: 1,
+    totalLocal: 0,
+    proofFile: null,
+    proofPreviewUrl: null,
+    orderId: null
+  },
+  submitting: false,
+  admin: { session: null, loading:false, savedFlash:false }
+};
+
+function t(key){ return (I18N[state.lang] && I18N[state.lang][key]) || I18N.fr[key] || key; }
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function fmtUsd(n){ return "$" + Number(n||0).toFixed(2); }
+function fmtLocal(n, code){ return Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}) + " " + code; }
+function isValidEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e||"").trim()); }
+function isValidPhone(p){ return /^[+]?[\d\s\-()]{7,20}$/.test(String(p||"").trim()); }
+function isValidUsdcAddress(a){ return /^0x[a-fA-F0-9]{40}$/.test(String(a||"").trim()); }
+function genOrderId(){
+  const rand = (window.crypto && crypto.getRandomValues) ?
+    Array.from(crypto.getRandomValues(new Uint8Array(3))).map(b=>b.toString(36)).join("").toUpperCase() :
+    Math.random().toString(36).slice(2,7).toUpperCase();
+  return "GNF-" + Date.now().toString(36).toUpperCase() + "-" + rand;
+}
+function showToast(msg, isErr){
+  const host = document.getElementById("toastHost");
+  const el = document.createElement("div");
+  el.className = "toast" + (isErr ? " err" : "");
+  el.textContent = msg;
+  host.appendChild(el);
+  setTimeout(()=>{ el.style.opacity="0"; el.style.transition="opacity .3s"; setTimeout(()=>el.remove(),300); }, 3200);
+}
+function goto(route){
+  if(state.route !== route){ state.history.push(state.route); }
+  state.route = route;
+  render();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function goBack(){
+  const prev = state.history.pop();
+  state.route = prev || "home";
+  render();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* ============================================================
+   SUPABASE: settings
+   ============================================================ */
+async function loadSettings(){
+  console.log("Supabase URL:", SUPABASE_URL);
+  const { data, error } = await sb.from("settings").select("*").limit(1).maybeSingle();
+  console.log("Settings result:", data);
+  console.error("Settings error:", error);
+  if(error){
+    state.settingsError = t("settingsError");
+  } else {
+    state.settings = data;
+    state.settingsError = null;
+  }
+  render();
+}
+
+/* ============================================================
+   RENDER: shell
+   ============================================================ */
+function render(){
+  document.documentElement.lang = state.lang;
+  document.getElementById("footerText").textContent = t("footer");
+  document.getElementById("adminLink").textContent = t("admin");
+  document.getElementById("langFr").classList.toggle("active", state.lang==="fr");
+  document.getElementById("langHt").classList.toggle("active", state.lang==="ht");
+
+  const app = document.getElementById("app");
+  app.innerHTML = "";
+  app.classList.add("fade-in");
+  void app.offsetWidth;
+
+  if(state.route === "admin"){ renderAdmin(app); return; }
+
+  if(state.settingsError){
+    app.appendChild(renderErrorScreen());
+    return;
+  }
+  if(!state.settings){
+    app.appendChild(renderLoader());
+    return;
+  }
+
+  switch(state.route){
+    case "home": renderHome(app); break;
+    case "amount": renderAmount(app); break;
+    case "customer": renderCustomer(app); break;
+    case "payment": renderPaymentMethod(app); break;
+    case "instructions": renderInstructions(app); break;
+    case "upload": renderUpload(app); break;
+    case "summary": renderSummary(app); break;
+    case "success": renderSuccess(app); break;
+    default: renderHome(app);
+  }
+}
+
+function renderLoader(){
+  const d = document.createElement("div");
+  d.className = "center-loader";
+  d.innerHTML = `<div class="ring"></div><div>${state.lang==="fr"?"Chargement...":"Chajman..."}</div>`;
+  return d;
+}
+function renderErrorScreen(){
+  const d = document.createElement("div");
+  d.className = "glass glass-panel";
+  d.style.marginTop = "60px";
+  d.style.textAlign = "center";
+  d.innerHTML = `
+    <div class="warning-box" style="margin-bottom:20px">${esc(state.settingsError)}</div>
+    <button class="btn btn-primary" style="width:auto" id="retryBtn">${esc(t("retry"))}</button>
+  `;
+  d.querySelector("#retryBtn").onclick = ()=>{ state.settings=null; state.settingsError=null; render(); loadSettings(); };
+  return d;
+}
+
+function stepShell(container, {title, sub, stepNum, totalSteps, onBack}){
+  const wrap = document.createElement("div");
+  wrap.className = "glass glass-panel fade-in";
+  wrap.style.marginTop = "24px";
+  const header = document.createElement("div");
+  header.className = "step-header";
+  header.innerHTML = `
+    <button class="back-btn" aria-label="${esc(t('back'))}">←</button>
+    <div>
+      <p class="step-title" style="margin:0">${esc(title)}</p>
+      <p class="step-sub">${esc(sub)}</p>
+    </div>
+  `;
+  header.querySelector(".back-btn").onclick = onBack || goBack;
+  wrap.appendChild(header);
+  if(stepNum && totalSteps){
+    const track = document.createElement("div");
+    track.className = "progress-track";
+    track.innerHTML = `<div class="progress-fill" style="width:${(stepNum/totalSteps)*100}%"></div>`;
+    wrap.appendChild(track);
+  }
+  container.appendChild(wrap);
+  return wrap;
+}
+
+/* ============================================================
+   STEP: HOME
+   ============================================================ */
+function renderHome(app){
+  const hero = document.createElement("div");
+  hero.className = "hero fade-in";
+  hero.innerHTML = `
+    <div class="eyebrow">${esc(t("heroEyebrow"))}</div>
+    <h1>${esc(t("heroTitle"))} <span class="grad">${esc(t("heroTitleGrad"))}</span></h1>
+    <p>${esc(t("heroSub"))}</p>
+    <div class="icon-stack" id="iconStack">
+      ${SERVICES.map(s=>`<div class="orb" data-tilt><img src="${esc(s.logo)}" alt="${esc(s.name)}"></div>`).join("")}
+    </div>
+  `;
+  app.appendChild(hero);
+  attachTilt(hero.querySelector("#iconStack"));
+
+  const panel = document.createElement("div");
+  panel.className = "glass glass-panel fade-in";
+  panel.innerHTML = `<p class="step-title" style="margin-bottom:18px">${esc(t("chooseService"))}</p>`;
+  const grid = document.createElement("div");
+  grid.className = "grid grid-3";
+  SERVICES.forEach(s=>{
+    const card = document.createElement("div");
+    card.className = "card-select";
+    card.innerHTML = `<img class="card-logo" src="${esc(s.logo)}" alt="${esc(s.name)}"><div class="card-name">${esc(s.name)}</div>`;
+    card.onclick = ()=>{
+      state.order.service = s.id;
+      state.order.amountUsd = null; state.order.fee = 0; state.order.total = 0;
+      state.order.customer = {};
+      state.order.paymentMethod = null;
+      state.order.proofFile = null; state.order.proofPreviewUrl = null;
+      goto("amount");
+    };
+    grid.appendChild(card);
+  });
+  panel.appendChild(grid);
+  app.appendChild(panel);
+}
+
+function attachTilt(stackEl){
+  if(!stackEl) return;
+  const orbs = stackEl.querySelectorAll(".orb");
+  function onMove(e){
+    const rect = stackEl.getBoundingClientRect();
+    const relX = ((e.clientX ?? (e.touches && e.touches[0].clientX) ?? rect.left+rect.width/2) - rect.left) / rect.width - 0.5;
+    orbs.forEach((o,i)=>{
+      const depth = (i%3)+1;
+      o.style.transform = `translateY(${relX*depth*6}px) rotateY(${relX*10}deg)`;
+    });
+  }
+  window.addEventListener("mousemove", onMove);
+}
+
+/* ============================================================
+   STEP: AMOUNT
+   ============================================================ */
+function renderAmount(app){
+  const wrap = stepShell(app, {title:t("amountTitle"), sub:t("amountSub"), stepNum:1, totalSteps:6});
+  const s = state.settings;
+  const min = Number(s.min_amount), max = Number(s.max_amount), feePct = Number(s.gonaf_fee_percent);
+
+  const body = document.createElement("div");
+  body.innerHTML = `
+    <div class="field-wrap" id="amtWrap">
+      <label class="field-label">${esc(t("amountLabel"))}</label>
+      <div class="amount-input-wrap">
+        <span class="prefix">$</span>
+        <input type="number" inputmode="decimal" min="${min}" max="${max}" step="0.01" id="amtInput"
+          placeholder="${esc(t('amountPlaceholder'))}" value="${state.order.amountUsd ?? ''}">
+      </div>
+      <p class="field-hint">${esc(t("min"))}: ${fmtUsd(min)} &nbsp;·&nbsp; ${esc(t("max"))}: ${fmtUsd(max)}</p>
+      <p class="field-error" id="amtErr"></p>
+    </div>
+    <div id="calcBox"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="amtNext">${esc(t("continue"))}</button>
+    </div>
+  `;
+  wrap.appendChild(body);
+
+  const input = body.querySelector("#amtInput");
+  const calcBox = body.querySelector("#calcBox");
+  const amtWrap = body.querySelector("#amtWrap");
+  const amtErr = body.querySelector("#amtErr");
+
+  function updateCalc(){
+    const val = parseFloat(input.value);
+    if(!val || isNaN(val)){ calcBox.innerHTML = ""; return; }
+    const fee = val * (feePct/100);
+    const total = val + fee;
+    calcBox.innerHTML = `
+      <div class="glass" style="background:rgba(255,255,255,.03);padding:16px 18px;margin:6px 0 4px;border-radius:16px">
+        <div class="kv-row"><span class="kv-label">${esc(t("recharge"))}</span><span class="kv-value">${fmtUsd(val)}</span></div>
+        <div class="kv-row"><span class="kv-label">${esc(t("fee"))} (${feePct}%)</span><span class="kv-value">${fmtUsd(fee)}</span></div>
+        <div class="kv-row kv-total"><span class="kv-label">${esc(t("total"))}</span><span class="kv-value">${fmtUsd(total)}</span></div>
+      </div>
+    `;
+  }
+  input.addEventListener("input", updateCalc);
+  updateCalc();
+
+  body.querySelector("#amtNext").onclick = ()=>{
+    const val = parseFloat(input.value);
+    amtWrap.classList.remove("invalid");
+    if(!val || isNaN(val)){
+      amtErr.textContent = t("amountRequired");
+      amtWrap.classList.add("invalid");
+      return;
+    }
+    if(val < min){
+      amtErr.textContent = `${t("amountTooLow")} ${fmtUsd(min)}`;
+      amtWrap.classList.add("invalid");
+      return;
+    }
+    if(val > max){
+      amtErr.textContent = `${t("amountTooHigh")} ${fmtUsd(max)}`;
+      amtWrap.classList.add("invalid");
+      return;
+    }
+    const fee = val * (feePct/100);
+    state.order.amountUsd = val;
+    state.order.fee = fee;
+    state.order.total = val + fee;
+    goto("customer");
+  };
+}
+
+/* ============================================================
+   STEP: CUSTOMER INFO
+   ============================================================ */
+function customerFieldsConfig(){
+  const svc = state.order.service;
+  const fields = [{key:"fullName", label:t("fullName"), ph:t("fullNamePh"), type:"text", required:true, err:t("fullNameErr")}];
+  if(svc === "wise"){
+    fields.push({key:"wiseTag", label:t("wiseTag"), ph:t("wiseTagPh"), type:"text", required:true, err:t("wiseTagErr")});
+    fields.push({key:"wiseEmail", label:t("wiseEmail"), ph:t("wiseEmailPh"), type:"email", required:true, err:t("wiseEmailErr"), validate:isValidEmail});
+  } else if(svc === "meru"){
+    fields.push({key:"meruTag", label:t("meruTag"), ph:t("meruTagPh"), type:"text", required:false, group:"meru"});
+    fields.push({key:"meruEmail", label:t("meruEmail"), ph:t("meruEmailPh"), type:"email", required:false, group:"meru"});
+  } else if(svc === "paypal"){
+    fields.push({key:"paypalEmail", label:t("paypalEmail"), ph:t("paypalEmailPh"), type:"email", required:true, err:t("paypalEmailErr"), validate:isValidEmail});
+  } else if(svc === "pana"){
+    fields.push({key:"panaEmail", label:t("panaEmail"), ph:t("panaEmailPh"), type:"email", required:true, err:t("panaEmailErr"), validate:isValidEmail});
+    fields.push({key:"panaPhone", label:t("panaPhone"), ph:t("panaPhonePh"), type:"tel", required:true, err:t("panaPhoneErr"), validate:isValidPhone});
+  } else if(svc === "cashapp"){
+    fields.push({key:"cashTag", label:t("cashTag"), ph:t("cashTagPh"), type:"text", required:false, group:"cash"});
+    fields.push({key:"cashPhone", label:t("cashPhone"), ph:t("cashPhonePh"), type:"tel", required:false, group:"cash"});
+    fields.push({key:"cashEmail", label:t("cashEmail"), ph:t("cashEmailPh"), type:"email", required:false, group:"cash"});
+  } else if(svc === "usdc"){
+    fields.push({key:"walletAddress", label:t("usdcAddress"), ph:t("usdcAddressPh"), type:"text", required:true, err:t("usdcAddressErr"), validate:isValidUsdcAddress, mono:true});
+  }
+  return fields;
+}
+
+function renderCustomer(app){
+  const wrap = stepShell(app, {title:t("custTitle"), sub:t("custSub"), stepNum:2, totalSteps:6});
+  const fields = customerFieldsConfig();
+  const body = document.createElement("div");
+
+  if(state.order.service === "usdc"){
+    const warn = document.createElement("div");
+    warn.className = "warning-box";
+    warn.textContent = t("usdcWarning");
+    body.appendChild(warn);
+  }
+
+  const form = document.createElement("div");
+  fields.forEach(f=>{
+    const fw = document.createElement("div");
+    fw.className = "field-wrap";
+    fw.dataset.key = f.key;
+    fw.innerHTML = `
+      <label class="field-label">${esc(f.label)}${f.required?"":""}</label>
+      <input type="${f.type==='email'?'email':f.type==='tel'?'tel':'text'}" data-field="${f.key}"
+        placeholder="${esc(f.ph)}" value="${esc(state.order.customer[f.key]||'')}"
+        style="${f.mono?'font-family:var(--font-mono)':''}">
+      <p class="field-error">${esc(f.err||'')}</p>
+    `;
+    form.appendChild(fw);
+  });
+
+  if(state.order.service === "usdc"){
+    const cb = document.createElement("div");
+    cb.className = "field-wrap";
+    cb.dataset.key = "usdcConfirm";
+    cb.innerHTML = `
+      <label class="checkbox-row">
+        <input type="checkbox" id="usdcConfirmChk" ${state.order.customer.usdcConfirm ? "checked":""}>
+        <span>${esc(t("usdcConfirm"))}</span>
+      </label>
+      <p class="field-error">${esc(t("usdcConfirmErr"))}</p>
+    `;
+    form.appendChild(cb);
+  }
+
+  const groupErr = {};
+  ["meru","cash"].forEach(g=>{
+    const wrap2 = document.createElement("p");
+    wrap2.className = "field-error";
+    wrap2.dataset.group = g;
+    wrap2.textContent = g==="meru" ? t("meruErr") : t("cashErr");
+    groupErr[g] = wrap2;
+  });
+
+  body.appendChild(form);
+
+  const groupErrHost = document.createElement("div");
+  Object.values(groupErr).forEach(e=>{ e.style.display="none"; e.style.marginTop="-8px"; e.style.marginBottom="16px"; groupErrHost.appendChild(e); });
+  body.appendChild(groupErrHost);
+
+  const btnRow = document.createElement("div");
+  btnRow.className = "btn-row";
+  btnRow.innerHTML = `<button class="btn btn-primary" id="custNext">${esc(t("continue"))}</button>`;
+  body.appendChild(btnRow);
+  wrap.appendChild(body);
+
+  btnRow.querySelector("#custNext").onclick = ()=>{
+    let valid = true;
+    const customer = {...state.order.customer};
+
+    fields.forEach(f=>{
+      const fw = form.querySelector(`[data-key="${f.key}"]`);
+      const input = fw.querySelector("input");
+      const val = input.value.trim();
+      customer[f.key] = val;
+      fw.classList.remove("invalid");
+      if(f.required){
+        if(!val || (f.validate && !f.validate(val))){
+          fw.classList.add("invalid");
+          valid = false;
+        }
+      }
+    });
+
+    // group validations
+    if(state.order.service === "meru"){
+      const ok = (customer.meruTag && customer.meruTag.trim()) || (customer.meruEmail && isValidEmail(customer.meruEmail));
+      groupErr.meru.style.display = ok ? "none" : "block";
+      if(!ok) valid = false;
+    }
+    if(state.order.service === "cashapp"){
+      const ok = (customer.cashTag && customer.cashTag.trim()) ||
+                 (customer.cashPhone && isValidPhone(customer.cashPhone)) ||
+                 (customer.cashEmail && isValidEmail(customer.cashEmail));
+      groupErr.cash.style.display = ok ? "none" : "block";
+      if(!ok) valid = false;
+    }
+    if(state.order.service === "usdc"){
+      const chk = form.parentElement.querySelector("#usdcConfirmChk") || body.querySelector("#usdcConfirmChk");
+      customer.usdcConfirm = chk.checked;
+      const fw = body.querySelector('[data-key="usdcConfirm"]');
+      if(!chk.checked){ fw.classList.add("invalid"); valid = false; } else { fw.classList.remove("invalid"); }
+    }
+
+    if(!valid) return;
+    state.order.customer = customer;
+    goto("payment");
+  };
+}
+
+/* ============================================================
+   STEP: PAYMENT METHOD
+   ============================================================ */
+function renderPaymentMethod(app){
+  const wrap = stepShell(app, {title:t("payMethodTitle"), sub:t("payMethodSub"), stepNum:3, totalSteps:6});
+  const grid = document.createElement("div");
+  grid.className = "grid grid-2";
+  PAYMENT_METHODS.forEach(m=>{
+    const card = document.createElement("div");
+    card.className = "card-select" + (state.order.paymentMethod===m.id ? " selected":"");
+    card.innerHTML = `<img class="card-logo" src="${esc(m.logo)}" alt="${esc(m.name)}"><div class="card-name">${esc(m.name)}</div>`;
+    card.onclick = ()=>{
+      state.order.paymentMethod = m.id;
+      computeCurrency();
+      goto("instructions");
+    };
+    grid.appendChild(card);
+  });
+  wrap.appendChild(grid);
+}
+
+function computeCurrency(){
+  const s = state.settings;
+  const method = state.order.paymentMethod;
+  if(method === "moncash"){
+    state.order.currency = "HTG";
+    state.order.exchangeRate = Number(s.usd_to_htg);
+    state.order.totalLocal = state.order.total * Number(s.usd_to_htg);
+  } else if(method === "bancopopular"){
+    state.order.currency = "DOP";
+    state.order.exchangeRate = Number(s.usd_to_dop);
+    state.order.totalLocal = state.order.total * Number(s.usd_to_dop);
+  } else {
+    state.order.currency = "USD";
+    state.order.exchangeRate = 1;
+    state.order.totalLocal = state.order.total;
+  }
+}
+
+/* ============================================================
+   STEP: INSTRUCTIONS
+   ============================================================ */
+function payInfoRow(label, value, mono=true){
+  const row = document.createElement("div");
+  row.className = "pay-info-row";
+  row.innerHTML = `
+    <div>
+      <div class="label">${esc(label)}</div>
+      <div class="val" ${mono?'':'style="font-family:inherit"'}>${esc(value)}</div>
+    </div>
+    <button class="copy-btn" aria-label="copy">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+  `;
+  const btn = row.querySelector(".copy-btn");
+  btn.onclick = async ()=>{
+    try{
+      await navigator.clipboard.writeText(value);
+    }catch(e){
+      const ta = document.createElement("textarea");
+      ta.value = value; document.body.appendChild(ta); ta.select();
+      document.execCommand("copy"); ta.remove();
+    }
+    btn.classList.add("copied");
+    setTimeout(()=>btn.classList.remove("copied"), 1400);
+  };
+  return row;
+}
+
+function renderInstructions(app){
+  const wrap = stepShell(app, {title:t("instrTitle"), sub:t("instrSub"), stepNum:4, totalSteps:6});
+  const body = document.createElement("div");
+  const method = state.order.paymentMethod;
+  const info = PAYMENT_INFO[method];
+
+  if(method === "usdc"){
+    const warn = document.createElement("div");
+    warn.className = "warning-box";
+    warn.textContent = t("usdcOnly") + " — " + t("usdcWarning");
+    body.appendChild(warn);
+    body.appendChild(payInfoRow(t("network"), info.network));
+    body.appendChild(payInfoRow(t("address"), info.address));
+  } else if(method === "moncash"){
+    body.appendChild(payInfoRow(t("name"), info.name, false));
+    body.appendChild(payInfoRow(t("phone"), info.phone));
+  } else if(method === "bancopopular"){
+    body.appendChild(payInfoRow(t("reference"), info.reference));
+    body.appendChild(payInfoRow(t("bank"), info.bank, false));
+    body.appendChild(payInfoRow(t("beneficiary"), info.beneficiary, false));
+    body.appendChild(payInfoRow(t("currencyLabel"), info.currency, false));
+    body.appendChild(payInfoRow(t("accountType"), info.accountType, false));
+    body.appendChild(payInfoRow("RNC", info.rnc));
+    body.appendChild(payInfoRow(t("account"), info.account));
+  } else if(method === "paypal"){
+    body.appendChild(payInfoRow(t("email"), info.email));
+    body.appendChild(payInfoRow(t("name"), info.name, false));
+  }
+
+  const calc = document.createElement("div");
+  calc.className = "glass";
+  calc.style.cssText = "background:rgba(255,255,255,.03);padding:16px 18px;margin-top:16px;border-radius:16px";
+  let rows = `
+    <div class="kv-row"><span class="kv-label">${esc(t("recharge"))}</span><span class="kv-value">${fmtUsd(state.order.amountUsd)}</span></div>
+    <div class="kv-row"><span class="kv-label">${esc(t("fee"))}</span><span class="kv-value">${fmtUsd(state.order.fee)}</span></div>
+    <div class="kv-row"><span class="kv-label">${esc(t("totalUsd"))}</span><span class="kv-value">${fmtUsd(state.order.total)}</span></div>
+  `;
+  if(state.order.currency !== "USD"){
+    rows += `
+      <div class="kv-row"><span class="kv-label">${esc(t("exchangeRate"))}</span><span class="kv-value">1 USD = ${state.order.exchangeRate} ${state.order.currency}</span></div>
+      <div class="kv-row kv-total"><span class="kv-label">${esc(t("totalLocal"))}</span><span class="kv-value">${fmtLocal(state.order.totalLocal, state.order.currency)}</span></div>
+    `;
+  } else {
+    rows += `<div class="kv-row kv-total"><span class="kv-label">${esc(t("totalLocal"))}</span><span class="kv-value">${fmtUsd(state.order.total)}</span></div>`;
+  }
+  calc.innerHTML = rows;
+  body.appendChild(calc);
+
+  const btnRow = document.createElement("div");
+  btnRow.className = "btn-row";
+  btnRow.innerHTML = `<button class="btn btn-primary" id="instrNext">${esc(t("continue"))}</button>`;
+  body.appendChild(btnRow);
+  btnRow.querySelector("#instrNext").onclick = ()=> goto("upload");
+
+  wrap.appendChild(body);
+}
+
+/* ============================================================
+   STEP: UPLOAD PROOF
+   ============================================================ */
+const ALLOWED_TYPES = ["image/jpeg","image/jpg","image/png","image/webp"];
+const MAX_SIZE = 5 * 1024 * 1024;
+
+function renderUpload(app){
+  const wrap = stepShell(app, {title:t("uploadTitle"), sub:t("uploadSub"), stepNum:5, totalSteps:6});
+  const body = document.createElement("div");
+  const errP = document.createElement("p");
+  errP.className = "field-error";
+  errP.style.display = "none";
+  errP.style.marginBottom = "14px";
+
+  function renderZoneOrPreview(){
+    body.innerHTML = "";
+    body.appendChild(errP);
+    if(state.order.proofFile && state.order.proofPreviewUrl){
+      const card = document.createElement("div");
+      card.className = "preview-card";
+      card.innerHTML = `
+        <img src="${state.order.proofPreviewUrl}" alt="proof">
+        <div class="preview-meta">
+          <div class="fname">${esc(state.order.proofFile.name)}</div>
+          <div class="fsize">${(state.order.proofFile.size/1024/1024).toFixed(2)} MB</div>
+        </div>
+        <button class="remove-btn">${esc(t("remove"))}</button>
+      `;
+      card.querySelector(".remove-btn").onclick = ()=>{
+        URL.revokeObjectURL(state.order.proofPreviewUrl);
+        state.order.proofFile = null;
+        state.order.proofPreviewUrl = null;
+        renderZoneOrPreview();
+      };
+      body.appendChild(card);
+    } else {
+      const dz = document.createElement("div");
+      dz.className = "drop-zone";
+      dz.innerHTML = `
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        <div class="dz-title">${esc(t("dzTitle"))}</div>
+        <div class="dz-sub">${esc(t("dzSub"))}</div>
+        <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp" style="display:none">
+      `;
+      const input = dz.querySelector("input");
+      dz.onclick = ()=> input.click();
+      dz.ondragover = (e)=>{ e.preventDefault(); dz.style.borderColor = "var(--accent-1)"; };
+      dz.ondragleave = ()=>{ dz.style.borderColor = ""; };
+      dz.ondrop = (e)=>{
+        e.preventDefault(); dz.style.borderColor = "";
+        if(e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+      };
+      input.onchange = ()=>{ if(input.files[0]) handleFile(input.files[0]); };
+      body.appendChild(dz);
+    }
+    const btnRow = document.createElement("div");
+    btnRow.className = "btn-row";
+    btnRow.innerHTML = `<button class="btn btn-primary" id="upNext">${esc(t("continue"))}</button>`;
+    body.appendChild(btnRow);
+    btnRow.querySelector("#upNext").onclick = ()=>{
+      if(!state.order.proofFile){
+        errP.textContent = t("uploadRequired");
+        errP.style.display = "block";
+        return;
+      }
+      errP.style.display = "none";
+      goto("summary");
+    };
+  }
+
+  function handleFile(file){
+    errP.style.display = "none";
+    if(!ALLOWED_TYPES.includes(file.type)){
+      errP.textContent = t("fileTypeInvalid");
+      errP.style.display = "block";
+      return;
+    }
+    if(file.size > MAX_SIZE){
+      errP.textContent = t("fileTooLarge");
+      errP.style.display = "block";
+      return;
+    }
+    state.order.proofFile = file;
+    state.order.proofPreviewUrl = URL.createObjectURL(file);
+    renderZoneOrPreview();
+  }
+
+  renderZoneOrPreview();
+  wrap.appendChild(body);
+}
+
+/* ============================================================
+   STEP: SUMMARY
+   ============================================================ */
+function serviceLabel(id){ const s = SERVICES.find(x=>x.id===id); return s ? s.name : id; }
+function methodLabel(id){ const m = PAYMENT_METHODS.find(x=>x.id===id); return m ? m.name : id; }
+
+function customerSummaryRows(){
+  const c = state.order.customer;
+  const fields = customerFieldsConfig();
+  const rows = [];
+  fields.forEach(f=>{
+    if(c[f.key]) rows.push([f.label, c[f.key]]);
+  });
+  return rows;
+}
+
+function renderSummary(app){
+  const wrap = stepShell(app, {title:t("summaryTitle"), sub:t("summarySub"), stepNum:6, totalSteps:6});
+  const body = document.createElement("div");
+
+  const secTitle = (txt)=>`<p style="font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);margin:20px 0 8px">${esc(txt)}</p>`;
+
+  let html = "";
+  html += secTitle(t("service"));
+  html += `<div class="kv-row"><span class="kv-label">${esc(t("service"))}</span><span class="kv-value">${esc(serviceLabel(state.order.service))}</span></div>`;
+
+  html += secTitle(t("customerInfo"));
+  customerSummaryRows().forEach(([label,val])=>{
+    html += `<div class="kv-row"><span class="kv-label">${esc(label)}</span><span class="kv-value" style="text-align:right;max-width:60%;word-break:break-word">${esc(val)}</span></div>`;
+  });
+
+  html += secTitle(t("paymentMethod"));
+  html += `<div class="kv-row"><span class="kv-label">${esc(t("paymentMethod"))}</span><span class="kv-value">${esc(methodLabel(state.order.paymentMethod))}</span></div>`;
+  html += `<div class="kv-row"><span class="kv-label">${esc(t("recharge"))}</span><span class="kv-value">${fmtUsd(state.order.amountUsd)}</span></div>`;
+  html += `<div class="kv-row"><span class="kv-label">${esc(t("fee"))}</span><span class="kv-value">${fmtUsd(state.order.fee)}</span></div>`;
+  if(state.order.currency !== "USD"){
+    html += `<div class="kv-row"><span class="kv-label">${esc(t("exchangeRate"))}</span><span class="kv-value">1 USD = ${state.order.exchangeRate} ${state.order.currency}</span></div>`;
+    html += `<div class="kv-row kv-total"><span class="kv-label">${esc(t("totalLocal"))}</span><span class="kv-value">${fmtLocal(state.order.totalLocal, state.order.currency)}</span></div>`;
+  } else {
+    html += `<div class="kv-row kv-total"><span class="kv-label">${esc(t("totalLocal"))}</span><span class="kv-value">${fmtUsd(state.order.total)}</span></div>`;
+  }
+
+  body.innerHTML = html;
+
+  if(state.order.proofPreviewUrl){
+    const p = document.createElement("div");
+    p.style.marginTop = "18px";
+    p.innerHTML = `${secTitle(t("uploadTitle"))}<img src="${state.order.proofPreviewUrl}" style="width:100%;max-height:220px;object-fit:cover;border-radius:14px;border:1px solid var(--glass-border)">`;
+    body.appendChild(p);
+  }
+
+  const errBox = document.createElement("div");
+  errBox.className = "warning-box";
+  errBox.style.display = "none";
+  errBox.style.marginTop = "18px";
+  body.appendChild(errBox);
+
+  const btnRow = document.createElement("div");
+  btnRow.className = "btn-row";
+  btnRow.innerHTML = `<button class="btn btn-primary" id="confirmBtn">${esc(t("confirmOrder"))}</button>`;
+  body.appendChild(btnRow);
+
+  const confirmBtn = btnRow.querySelector("#confirmBtn");
+  confirmBtn.onclick = async ()=>{
+    if(state.submitting) return;
+    state.submitting = true;
+    confirmBtn.disabled = true;
+    errBox.style.display = "none";
+    confirmBtn.innerHTML = `<span class="spin"></span> ${esc(t("creating"))}`;
+
+    try{
+      if(!sb) throw new Error("Supabase client not configured");
+
+      const orderId = genOrderId();
+
+      // 1. Upload proof
+      confirmBtn.innerHTML = `<span class="spin"></span> ${esc(t("uploadingProof"))}`;
+      const file = state.order.proofFile;
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const path = `${orderId}/proof.${ext}`;
+      const { error: upErr } = await sb.storage.from("payment-proofs").upload(path, file, {
+        contentType: file.type, upsert: false
+      });
+      if(upErr){ console.error("Storage upload error:", upErr); throw new Error("upload_failed"); }
+
+      let proofUrl = null;
+      try{
+        const { data: pub } = sb.storage.from("payment-proofs").getPublicUrl(path);
+        proofUrl = pub ? pub.publicUrl : null;
+      }catch(e){ console.error("getPublicUrl error:", e); }
+
+      // 2. Insert order — payload built from the ACTUAL public.orders columns
+      confirmBtn.innerHTML = `<span class="spin"></span> ${esc(t("creating"))}`;
+      const nowIso = new Date().toISOString();
+      const cust = state.order.customer;
+
+      const orderRow = {
+        order_id: orderId,
+        language: state.lang,
+        service: state.order.service,
+        amount: state.order.amountUsd,
+        customer_full_name: cust.fullName || "",
+        payment_method: state.order.paymentMethod,
+        status: "pending",
+        created_at: nowIso,
+        updated_at: nowIso,
+
+        payment_proof_path: path,
+
+        amount_usd: state.order.amountUsd ?? null,
+        currency: state.order.currency ?? null,
+        exchange_rate: state.order.exchangeRate ?? null,
+        fee_usd: state.order.fee ?? null,
+        total_usd: state.order.total ?? null,
+        total_local: state.order.totalLocal ?? null,
+
+        customer_name: cust.fullName || "",
+        customer_info: cust,
+        proof_path: path,
+        proof_url: proofUrl,
+        lang: state.lang
+      };
+
+      if(cust.wiseTag) orderRow.wisetag = cust.wiseTag;
+      if(cust.wiseEmail) orderRow.wise_email = cust.wiseEmail;
+
+      if(cust.meruTag) orderRow.merutag = cust.meruTag;
+      if(cust.meruEmail) orderRow.meru_email = cust.meruEmail;
+
+      if(cust.paypalEmail) orderRow.paypal_email = cust.paypalEmail;
+
+      if(cust.panaEmail) orderRow.pana_email = cust.panaEmail;
+      if(cust.panaPhone) orderRow.pana_phone = cust.panaPhone;
+
+      if(cust.cashTag) orderRow.cashapp_tag = cust.cashTag;
+      if(cust.cashPhone) orderRow.cashapp_phone = cust.cashPhone;
+      if(cust.cashEmail) orderRow.cashapp_email = cust.cashEmail;
+
+      if(cust.walletAddress) orderRow.usdc_base_address = cust.walletAddress;
+
+      const { data: insertedOrder, error: insErr } = await sb.from("orders").insert(orderRow).select().single();
+      if(insErr){
+        console.error("ORDER INSERT ERROR:", insErr);
+        console.error("ORDER INSERT ERROR JSON:", JSON.stringify(insErr, Object.getOwnPropertyNames(insErr), 2));
+        console.error("ORDER PAYLOAD SENT:", orderRow);
+        throw insErr;
+      }
+      console.log("ORDER CREATED SUCCESSFULLY:", insertedOrder);
+
+      // 3. Notify via edge function (best-effort — order already exists)
+      try{
+        await sb.functions.invoke("notify-order", { body: insertedOrder });
+      }catch(fnErr){
+        console.error("notify-order function error:", fnErr);
+      }
+
+      state.order.orderId = orderId;
+      state.submitting = false;
+      goto("success");
+
+    }catch(err){
+      console.error("Order submission error:", err);
+      state.submitting = false;
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = t("confirmOrder");
+      const isUpload = err && err.message === "upload_failed";
+      // TEMPORARY: showing the raw Supabase error for debugging.
+      // Revert to t("submitError") once the insert issue is confirmed fixed.
+      const msg = isUpload ? t("uploadError") : (err && err.message ? err.message : t("submitError"));
+      errBox.textContent = msg;
+      errBox.style.display = "block";
+    }
+  };
+
+  wrap.appendChild(body);
+}
+
+/* ============================================================
+   STEP: SUCCESS
+   ============================================================ */
+function renderSuccess(app){
+  const wrap = document.createElement("div");
+  wrap.className = "glass glass-panel fade-in success-wrap";
+  wrap.style.marginTop = "40px";
+  wrap.innerHTML = `
+    <div class="success-icon">
+      <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2 style="margin:0 0 10px">${esc(t("successTitle"))}</h2>
+    <p style="color:var(--text-1);max-width:420px;margin:0 auto;line-height:1.6">${esc(t("successSub"))}</p>
+    <div class="order-id-chip">${esc(state.order.orderId || "")}</div>
+    <div class="kv-row" style="max-width:280px;margin:0 auto"><span class="kv-label">${esc(t("status"))}</span><span class="kv-value" style="color:var(--gold)">${esc(t("statusPending"))}</span></div>
+    <div style="margin-top:28px">
+      <button class="btn btn-primary" id="newOrderBtn" style="width:auto;padding:14px 28px">${esc(t("newOrder"))}</button>
+    </div>
+  `;
+  wrap.querySelector("#newOrderBtn").onclick = ()=>{
+    state.order = {
+      service:null, amountUsd:null, fee:0, total:0, customer:{}, paymentMethod:null,
+      currency:"USD", exchangeRate:1, totalLocal:0, proofFile:null, proofPreviewUrl:null, orderId:null
+    };
+    state.history = [];
+    goto("home");
+  };
+  app.appendChild(wrap);
+}
+
+/* ============================================================
+   ADMIN
+   ============================================================ */
+async function renderAdmin(app){
+  app.innerHTML = "";
+  const wrap = document.createElement("div");
+  wrap.className = "glass glass-panel fade-in admin-lock";
+  wrap.style.marginTop = "60px";
+
+  if(!sb){
+    wrap.innerHTML = `<div class="warning-box">${esc(t("configError"))}</div>`;
+    app.appendChild(wrap);
+    return;
+  }
+
+  if(!state.admin.session){
+    const { data } = await sb.auth.getSession();
+    state.admin.session = data ? data.session : null;
+  }
+
+  if(!state.admin.session){
+    wrap.innerHTML = `
+      <p class="step-title" style="margin-bottom:18px">${esc(t("adminPasswordTitle"))}</p>
+      <div class="field-wrap">
+        <label class="field-label">${esc(t("adminEmail"))}</label>
+        <input type="email" id="adEmail" placeholder="admin@gonaf.com">
+      </div>
+      <div class="field-wrap">
+        <label class="field-label">${esc(t("adminPassword"))}</label>
+        <input type="text" id="adPass" placeholder="••••••••" style="-webkit-text-security:disc;text-security:disc">
+      </div>
+      <p class="field-error" id="adErr" style="display:none;margin-bottom:12px"></p>
+      <button class="btn btn-primary" id="adLoginBtn">${esc(t("adminLogin"))}</button>
+    `;
+    app.appendChild(wrap);
+    wrap.querySelector("#adLoginBtn").onclick = async ()=>{
+      const email = wrap.querySelector("#adEmail").value.trim();
+      const pass = wrap.querySelector("#adPass").value;
+      const errEl = wrap.querySelector("#adErr");
+      errEl.style.display = "none";
+      try{
+        const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+        if(error) throw error;
+        state.admin.session = data.session;
+        render();
+      }catch(err){
+        console.error("Admin login error:", err);
+        errEl.textContent = t("adminLoginError");
+        errEl.style.display = "block";
+      }
+    };
+    return;
+  }
+
+  // logged in — settings editor
+  wrap.style.maxWidth = "560px";
+  const s = state.settings || {};
+  wrap.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <p class="step-title" style="margin:0">${esc(t("adminSettingsTitle"))}</p>
+      <button class="btn btn-ghost btn-sm" id="adLogout">${esc(t("adminLogout"))}</button>
+    </div>
+    <div class="field-wrap"><label class="field-label">${esc(t("minAmount"))}</label><input type="number" step="0.01" id="s_min" value="${esc(s.min_amount ?? '')}"></div>
+    <div class="field-wrap"><label class="field-label">${esc(t("maxAmount"))}</label><input type="number" step="0.01" id="s_max" value="${esc(s.max_amount ?? '')}"></div>
+    <div class="field-wrap"><label class="field-label">${esc(t("feePercent"))}</label><input type="number" step="0.01" id="s_fee" value="${esc(s.gonaf_fee_percent ?? '')}"></div>
+    <div class="field-wrap"><label class="field-label">${esc(t("htgRate"))}</label><input type="number" step="0.01" id="s_htg" value="${esc(s.usd_to_htg ?? '')}"></div>
+    <div class="field-wrap"><label class="field-label">${esc(t("dopRate"))}</label><input type="number" step="0.01" id="s_dop" value="${esc(s.usd_to_dop ?? '')}"></div>
+    <p class="field-error" id="adSaveErr" style="display:none;margin-bottom:10px"></p>
+    <button class="btn btn-primary" id="adSaveBtn">${esc(t("adminSave"))}</button>
+  `;
+  app.appendChild(wrap);
+
+  wrap.querySelector("#adLogout").onclick = async ()=>{
+    await sb.auth.signOut();
+    state.admin.session = null;
+    render();
+  };
+
+  wrap.querySelector("#adSaveBtn").onclick = async ()=>{
+    const btn = wrap.querySelector("#adSaveBtn");
+    const errEl = wrap.querySelector("#adSaveErr");
+    errEl.style.display = "none";
+    const payload = {
+      min_amount: parseFloat(wrap.querySelector("#s_min").value),
+      max_amount: parseFloat(wrap.querySelector("#s_max").value),
+      gonaf_fee_percent: parseFloat(wrap.querySelector("#s_fee").value),
+      usd_to_htg: parseFloat(wrap.querySelector("#s_htg").value),
+      usd_to_dop: parseFloat(wrap.querySelector("#s_dop").value),
+      updated_at: new Date().toISOString()
+    };
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spin"></span>`;
+    try{
+      const { error } = await sb.from("settings").update(payload).eq("id", s.id);
+      if(error) throw error;
+      state.settings = {...s, ...payload};
+      showToast(t("adminSaved"));
+    }catch(err){
+      console.error("Admin settings save error:", err);
+      errEl.textContent = t("adminSaveError");
+      errEl.style.display = "block";
+    }finally{
+      btn.disabled = false;
+      btn.textContent = t("adminSave");
+    }
+  };
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.getElementById("logoBtn").onclick = ()=>{
+  state.order = { service:null, amountUsd:null, fee:0, total:0, customer:{}, paymentMethod:null,
+    currency:"USD", exchangeRate:1, totalLocal:0, proofFile:null, proofPreviewUrl:null, orderId:null };
+  state.history = [];
+  goto("home");
+};
+document.getElementById("langFr").onclick = ()=>{ state.lang="fr"; localStorage.setItem("gonaf_lang","fr"); render(); };
+document.getElementById("langHt").onclick = ()=>{ state.lang="ht"; localStorage.setItem("gonaf_lang","ht"); render(); };
+document.getElementById("adminLink").onclick = ()=> goto("admin");
+
+render();
+loadSettings();
+</script>
+</body>
+</html>
