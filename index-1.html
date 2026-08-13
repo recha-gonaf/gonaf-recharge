@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>GONAF+ — Recharge</title>
+<meta name="description" content="GONAF+ — Rechargez Wise, Pana, Meru, PayPal, Cash App et USDC sur Base.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green-900:#062A1E;
+    --green-700:#0B6E4F;
+    --green-600:#0E8C61;
+    --green-500:#14A876;
+    --mint-400:#5FE3AE;
+    --ink:#0B0F0E;
+    --ink-soft:#455049;
+    --gray-500:#6B7A73;
+    --gray-300:#D8E2DC;
+    --gray-100:#EEF3F0;
+    --paper:#FBFDFC;
+    --white:#FFFFFF;
+    --red-600:#C63C3C;
+    --red-50:#FCEDED;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    --shadow-card:0 1px 2px rgba(6,42,30,0.04), 0 8px 24px -12px rgba(6,42,30,0.12);
+    --shadow-lift:0 4px 10px rgba(6,42,30,0.06), 0 20px 40px -16px rgba(6,42,30,0.18);
+    --font-display:'Manrope', 'Inter', system-ui, sans-serif;
+    --font-body:'Inter', system-ui, -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    background:var(--paper);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  img{max-width:100%;display:block;}
+  button{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--green-600);outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+
+  /* ---------- Header ---------- */
+  .site-header{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px;
+    background:rgba(251,253,252,0.85);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--gray-100);
+  }
+  .logo{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:20px;
+    letter-spacing:-0.02em;
+    color:var(--ink);
+    background:none; border:none; cursor:pointer; padding:4px 0;
+  }
+  .logo span{color:var(--green-600);}
+  .lang-switch{
+    display:flex; align-items:center; gap:2px;
+    background:var(--gray-100);
+    border-radius:999px;
+    padding:3px;
+  }
+  .lang-btn{
+    border:none; background:transparent; cursor:pointer;
+    padding:7px 14px; border-radius:999px;
+    font-size:13px; font-weight:700; letter-spacing:0.02em;
+    color:var(--gray-500);
+    transition:background 0.2s, color 0.2s;
+  }
+  .lang-btn.active{ background:var(--ink); color:var(--white); }
+
+  /* ---------- Progress rail ---------- */
+  .progress-rail{
+    display:flex; gap:5px; padding:14px 20px 0;
+    max-width:640px; margin:0 auto;
+  }
+  .progress-seg{
+    flex:1; height:4px; border-radius:4px; background:var(--gray-200,#E3EAE6);
+    background:var(--gray-100);
+    overflow:hidden;
+  }
+  .progress-seg i{
+    display:block; height:100%; width:0%; background:var(--green-600);
+    transition:width 0.4s ease;
+  }
+  .progress-seg.done i{width:100%;}
+  .progress-seg.active i{width:55%;}
+
+  /* ---------- Layout ---------- */
+  main{ max-width:640px; margin:0 auto; padding:28px 20px 100px; }
+  .screen{ display:none; animation:fadeUp 0.35s ease; }
+  .screen.visible{ display:block; }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- Hero ---------- */
+  .hero{ padding:20px 0 8px; }
+  .hero h1{
+    font-family:var(--font-display);
+    font-size:34px; font-weight:800; letter-spacing:-0.03em;
+    line-height:1.12; margin:0 0 12px; color:var(--ink);
+  }
+  .hero p{ font-size:16px; color:var(--ink-soft); margin:0 0 28px; max-width:46ch; }
+
+  /* ---------- Service grid ---------- */
+  .service-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  }
+  .service-card{
+    display:flex; flex-direction:column; align-items:flex-start; gap:14px;
+    text-align:left; background:var(--white); border:1px solid var(--gray-100);
+    border-radius:var(--radius-lg); padding:18px 16px; cursor:pointer;
+    box-shadow:var(--shadow-card);
+    transition:transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .service-card:hover{ transform:translateY(-2px); box-shadow:var(--shadow-lift); border-color:var(--gray-300); }
+  .service-card:active{ transform:translateY(0); }
+  .service-icon{
+    width:40px; height:40px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-weight:800; font-size:16px;
+    color:var(--white); background:var(--green-700);
+  }
+  .service-name{ font-weight:700; font-size:14.5px; color:var(--ink); letter-spacing:-0.01em; }
+  .service-sub{ font-size:12.5px; color:var(--gray-500); margin-top:-8px; }
+
+  /* ---------- Step header ---------- */
+  .step-header{ margin-bottom:24px; }
+  .step-eyebrow{
+    font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em;
+    color:var(--green-600); margin:0 0 6px;
+  }
+  .step-title{
+    font-family:var(--font-display); font-size:24px; font-weight:800;
+    letter-spacing:-0.02em; margin:0 0 6px; color:var(--ink);
+  }
+  .step-desc{ font-size:14.5px; color:var(--ink-soft); margin:0; }
+
+  /* ---------- Form ---------- */
+  .field{ margin-bottom:18px; }
+  .field label{
+    display:block; font-size:13.5px; font-weight:600; color:var(--ink); margin-bottom:7px;
+  }
+  .field .req{ color:var(--green-600); }
+  .field input, .field select{
+    width:100%; padding:14px 16px; border-radius:var(--radius-md);
+    border:1.5px solid var(--gray-300); background:var(--white);
+    font-size:16px; color:var(--ink); font-family:inherit;
+    transition:border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field input::placeholder{ color:#9AA69F; }
+  .field input:focus, .field select:focus{
+    border-color:var(--green-600); box-shadow:0 0 0 4px rgba(14,140,97,0.12); outline:none;
+  }
+  .field.has-error input{ border-color:var(--red-600); }
+  .field.has-error .field-error{ display:block; }
+  .field-error{
+    display:none; font-size:12.5px; color:var(--red-600); margin-top:6px; font-weight:500;
+  }
+  .field-hint{ font-size:12.5px; color:var(--gray-500); margin-top:6px; }
+  .amount-input-wrap{ position:relative; }
+  .amount-input-wrap input{ padding-left:44px; font-weight:700; font-family:var(--font-display); font-size:22px; }
+  .amount-currency{
+    position:absolute; left:16px; top:50%; transform:translateY(-50%);
+    font-family:var(--font-display); font-weight:700; color:var(--gray-500); font-size:22px;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn-row{ display:flex; gap:10px; margin-top:8px; }
+  .btn{
+    flex:1; padding:16px 20px; border-radius:var(--radius-md); border:none;
+    font-size:15.5px; font-weight:700; cursor:pointer; text-align:center;
+    transition:background 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn:active{ transform:scale(0.98); }
+  .btn-primary{ background:var(--ink); color:var(--white); }
+  .btn-primary:hover{ background:#000; }
+  .btn-primary:disabled{ background:var(--gray-300); color:var(--gray-500); cursor:not-allowed; transform:none; }
+  .btn-secondary{ background:var(--gray-100); color:var(--ink); flex:0 0 auto; padding:16px 22px; }
+  .btn-secondary:hover{ background:var(--gray-300); }
+  .btn-full{ width:100%; }
+
+  /* ---------- Payment method list ---------- */
+  .method-list{ display:flex; flex-direction:column; gap:10px; }
+  .method-option{
+    display:flex; align-items:center; gap:14px;
+    background:var(--white); border:1.5px solid var(--gray-300);
+    border-radius:var(--radius-md); padding:16px; cursor:pointer;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .method-option:hover{ border-color:var(--green-500); }
+  .method-option.selected{ border-color:var(--green-600); background:#F1FBF6; }
+  .method-badge{
+    width:38px; height:38px; border-radius:10px; flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--gray-100); font-weight:800; font-size:13px; color:var(--ink);
+  }
+  .method-name{ font-weight:700; font-size:14.5px; }
+  .method-arrow{ margin-left:auto; color:var(--gray-500); font-size:18px; }
+
+  /* ---------- Info / instruction cards ---------- */
+  .info-card{
+    background:var(--white); border:1px solid var(--gray-100); border-radius:var(--radius-lg);
+    padding:20px; box-shadow:var(--shadow-card); margin-bottom:16px;
+  }
+  .info-row{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:12px 0; border-bottom:1px solid var(--gray-100);
+  }
+  .info-row:last-child{ border-bottom:none; }
+  .info-label{ font-size:12.5px; color:var(--gray-500); font-weight:600; text-transform:uppercase; letter-spacing:0.04em; }
+  .info-value{ font-size:15px; font-weight:700; color:var(--ink); text-align:right; word-break:break-word; }
+  .copy-btn{
+    flex:0 0 auto; border:1px solid var(--gray-300); background:var(--white);
+    border-radius:999px; padding:7px 13px; font-size:12.5px; font-weight:700;
+    color:var(--ink); cursor:pointer; white-space:nowrap;
+    transition:background 0.15s ease, border-color 0.15s ease;
+  }
+  .copy-btn:hover{ background:var(--gray-100); }
+  .copy-btn.copied{ background:var(--green-600); border-color:var(--green-600); color:var(--white); }
+
+  .banner-note{
+    display:flex; gap:10px; align-items:flex-start;
+    background:#F1FBF6; border:1px solid #C9EFDD; color:var(--green-900);
+    border-radius:var(--radius-md); padding:14px 16px; font-size:13.5px; font-weight:600;
+    margin-bottom:18px;
+  }
+
+  /* ---------- Warning block (USDC) ---------- */
+  .warning-card{
+    background:#FFF7ED; border:1.5px solid #FBD9A6; border-radius:var(--radius-lg);
+    padding:18px; margin:6px 0 18px;
+  }
+  .warning-title{ font-weight:800; font-size:15px; color:#9A5B00; margin:0 0 8px; }
+  .warning-body{ font-size:13.5px; color:#7A4A00; margin:0; white-space:pre-line; line-height:1.55; }
+  .checkbox-row{ display:flex; align-items:flex-start; gap:10px; margin-top:16px; }
+  .checkbox-row input[type="checkbox"]{
+    width:20px; height:20px; margin-top:1px; flex:0 0 auto; accent-color:var(--green-600);
+  }
+  .checkbox-row label{ font-size:13.5px; font-weight:600; color:var(--ink); }
+
+  /* ---------- Upload ---------- */
+  .upload-zone{
+    border:1.5px dashed var(--gray-300); border-radius:var(--radius-lg);
+    padding:28px 20px; text-align:center; cursor:pointer; background:var(--white);
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .upload-zone:hover{ border-color:var(--green-500); background:#F8FDFB; }
+  .upload-zone .icon{ font-size:28px; margin-bottom:8px; }
+  .upload-zone .main{ font-weight:700; font-size:14.5px; color:var(--ink); }
+  .upload-zone .sub{ font-size:12.5px; color:var(--gray-500); margin-top:4px; }
+  input[type="file"]{ display:none; }
+  .proof-preview{
+    display:flex; align-items:center; gap:14px;
+    background:var(--white); border:1px solid var(--gray-100); border-radius:var(--radius-lg);
+    padding:14px; box-shadow:var(--shadow-card);
+  }
+  .proof-preview img{
+    width:64px; height:64px; object-fit:cover; border-radius:var(--radius-sm); flex:0 0 auto;
+    border:1px solid var(--gray-100);
+  }
+  .proof-meta{ flex:1; min-width:0; }
+  .proof-filename{ font-weight:700; font-size:13.5px; word-break:break-all; }
+  .proof-filesize{ font-size:12.5px; color:var(--gray-500); margin-top:3px; }
+  .proof-remove{
+    flex:0 0 auto; border:none; background:var(--gray-100); color:var(--ink);
+    width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:16px; font-weight:700;
+  }
+  .proof-remove:hover{ background:var(--gray-300); }
+
+  /* ---------- Order Created ---------- */
+  .success-wrap{ text-align:center; padding:20px 0; }
+  .success-check{
+    width:72px; height:72px; border-radius:50%; margin:0 auto 22px;
+    background:var(--green-600); color:var(--white);
+    display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:800;
+    animation:pop 0.45s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes pop{ from{ transform:scale(0); opacity:0;} to{ transform:scale(1); opacity:1;} }
+  .success-title{ font-family:var(--font-display); font-size:26px; font-weight:800; margin:0 0 10px; letter-spacing:-0.02em; }
+  .success-msg{ font-size:14.5px; color:var(--ink-soft); margin:0 auto 6px; max-width:40ch; }
+  .status-pill{
+    display:inline-block; background:#FFF3D6; color:#8A6100; font-weight:700; font-size:12px;
+    padding:5px 12px; border-radius:999px; letter-spacing:0.03em; text-transform:uppercase;
+  }
+
+  .history-empty{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:24px;text-align:center;color:var(--gray-500);box-shadow:var(--shadow-card);}
+  .history-item{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius-lg);padding:16px;margin-bottom:10px;box-shadow:var(--shadow-card);}
+  .history-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px;}
+  .history-id{font-weight:800;font-family:var(--font-display);font-size:14px;}
+  .history-date{font-size:12px;color:var(--gray-500);}
+  .history-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;}
+  .history-meta span{color:var(--gray-500);}
+  .history-status{display:inline-block;background:#FFF3D6;color:#8A6100;font-weight:700;font-size:11px;padding:4px 9px;border-radius:999px;text-transform:uppercase;}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(12px);background:var(--ink);color:#fff;padding:11px 15px;border-radius:999px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:100;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  footer{
+    text-align:center; padding:24px 20px 40px; font-size:12px; color:var(--gray-500);
+  }
+
+  @media (max-width:420px){
+    .hero h1{ font-size:28px; }
+    .service-grid{ gap:10px; }
+    .btn-secondary{ padding:16px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <button class="logo" id="logoHome" aria-label="GONAF+ — accueil"><span>GONAF</span>+</button>
+  <div class="lang-switch" role="group" aria-label="Langue">
+    <button class="lang-btn" id="btnFR" data-lang="fr">FR</button>
+    <button class="lang-btn" id="btnHT" data-lang="ht">HT</button>
+  </div>
+</header>
+
+<div class="progress-rail" id="progressRail" style="display:none;"></div>
+
+<main>
+
+  <!-- HOME -->
+  <section class="screen" id="screen-home">
+    <div class="hero">
+      <h1 id="heroTitle"></h1>
+      <p id="heroDesc"></p>
+    </div>
+    <div class="service-grid" id="serviceGrid"></div>
+    <div style="margin-top:18px;"><button class="btn btn-secondary btn-full" id="historyBtn" type="button">Historique</button></div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="screen" id="screen-history">
+    <div class="step-header"><p class="step-eyebrow" id="historyEyebrow"></p><h2 class="step-title" id="historyTitle"></h2><p class="step-desc" id="historyDesc"></p></div>
+    <div id="historyContent"></div>
+    <div class="btn-row"><button class="btn btn-secondary btn-full" id="backFromHistory" type="button">←</button></div>
+  </section>
+
+  <!-- AMOUNT -->
+  <section class="screen" id="screen-amount">
+    <div class="step-header">
+      <p class="step-eyebrow" id="amountEyebrow"></p>
+      <h2 class="step-title" id="amountTitle"></h2>
+    </div>
+    <div class="field" id="field-amount">
+      <label id="labelAmount"></label>
+      <div class="amount-input-wrap">
+        <span class="amount-currency">$</span>
+        <input type="text" inputmode="decimal" id="inputAmount" placeholder="0.00">
+      </div>
+      <p class="field-error" id="errorAmount"></p>
+      <p class="field-hint" id="hintAmount"></p>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="backFromAmount">←</button>
+      <button class="btn btn-primary btn-full" id="continueFromAmount"></button>
+    </div>
+  </section>
+
+  <!-- CUSTOMER INFO -->
+  <section class="screen" id="screen-info">
+    <div class="step-header">
+      <p class="step-eyebrow" id="infoEyebrow"></p>
+      <h2 class="step-title" id="infoTitle"></h2>
+    </div>
+    <div id="infoFields"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="backFromInfo">←</button>
+      <button class="btn btn-primary btn-full" id="continueFromInfo"></button>
+    </div>
+  </section>
+
+  <!-- PAYMENT METHOD -->
+  <section class="screen" id="screen-method">
+    <div class="step-header">
+      <p class="step-eyebrow" id="methodEyebrow"></p>
+      <h2 class="step-title" id="methodTitle"></h2>
+    </div>
+    <div class="method-list" id="methodList"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="backFromMethod">←</button>
+    </div>
+  </section>
+
+  <!-- PAYMENT INSTRUCTIONS -->
+  <section class="screen" id="screen-instructions">
+    <div class="step-header">
+      <p class="step-eyebrow" id="instrEyebrow"></p>
+      <h2 class="step-title" id="instrTitle"></h2>
+    </div>
+    <div id="instrContent"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="backFromInstr">←</button>
+      <button class="btn btn-primary btn-full" id="continueFromInstr"></button>
+    </div>
+  </section>
+
+  <!-- PROOF -->
+  <section class="screen" id="screen-proof">
+    <div class="step-header">
+      <p class="step-eyebrow" id="proofEyebrow"></p>
+      <h2 class="step-title" id="proofTitle"></h2>
+      <p class="step-desc" id="proofDesc"></p>
+    </div>
+    <div id="proofArea"></div>
+    <p class="field-error" id="errorProof" style="display:none;"></p>
+    <div class="btn-row" style="margin-top:18px;">
+      <button class="btn btn-secondary" id="backFromProof">←</button>
+      <button class="btn btn-primary btn-full" id="continueFromProof"></button>
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="screen" id="screen-summary">
+    <div class="step-header">
+      <p class="step-eyebrow" id="summaryEyebrow"></p>
+      <h2 class="step-title" id="summaryTitle"></h2>
+    </div>
+    <div id="summaryContent"></div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="backFromSummary">←</button>
+      <button class="btn btn-primary btn-full" id="confirmOrder"></button>
+    </div>
+  </section>
+
+  <!-- DONE -->
+  <section class="screen" id="screen-done">
+    <div class="success-wrap">
+      <div class="success-check">✓</div>
+      <h2 class="success-title" id="doneTitle"></h2>
+      <p class="success-msg" id="doneMsg1"></p>
+      <p class="success-msg" id="doneMsg2"></p>
+    </div>
+    <div class="info-card" id="doneSummary"></div>
+    <button class="btn btn-primary btn-full" id="newOrderBtn"></button>
+  </section>
+
+</main>
+
+<footer id="footerText"></footer><div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     CONFIG
+  ============================================================ */
+  var MAX_AMOUNT = 5000;
+  var MAX_PROOF_SIZE = 5 * 1024 * 1024;
+  var HISTORY_KEY = "gonaf_orders_v1";
+
+  var PAYMENT_INFO = {
+    moncash:{ name:"Berlandina Descieux", phone:"+509 3897-1619" },
+    banco:{
+      ref:"556221", bank:"Banco Popular", beneficiary:"I-Pay",
+      currency:"USD ou DOP", accountType:"Corriente", rnc:"133-49568-6", account:"0852556430"
+    },
+    usdc:{ network:"Base", address:"0xbc4c2D16d057e86805AB25B55406A0f9172ab602" },
+    paypal:{ email:"hermitemarie@gmail.com", name:"Guerrier Yolla R." }
+  };
+
+  var SERVICES = [
+    { id:"wise", label:"Wise", icon:"W" },
+    { id:"pana", label:"Pana", icon:"P" },
+    { id:"meru", label:"Meru", icon:"M" },
+    { id:"paypal", label:"PayPal", icon:"PP" },
+    { id:"cashapp", label:"Cash App", icon:"$" },
+    { id:"usdc", label:"USDC/Base", icon:"U" }
+  ];
+
+  var METHODS = [
+    { id:"moncash", label:"MonCash", badge:"MC" },
+    { id:"banco", label:"Banco Popular", badge:"BP" },
+    { id:"usdc", label:"USDC / Base", badge:"U" },
+    { id:"paypal", label:"PayPal", badge:"PP" }
+  ];
+
+  var STEP_SEQUENCE = ["amount","info","method","instructions","proof","summary","done"];
+
+  /* ============================================================
+     TRANSLATIONS
+  ============================================================ */
+  var T = {
+    fr:{
+      heroTitle:"Rechargez vos services préférés.",
+      heroDesc:"Rechargez rapidement vos comptes Wise, Pana, Meru, PayPal, Cash App et USDC sur Base.",
+      recharge:"Recharge",
+      serviceSub:"Rechargement rapide et sécurisé",
+      amountEyebrow:"Montant",
+      amountTitle:"Quel montant souhaitez-vous recharger ?",
+      labelAmount:"Montant en USD",
+      hintAmount:"Montant maximum : $" + MAX_AMOUNT.toLocaleString("fr-FR") + " USD",
+      continue:"Continuer",
+      back:"Retour",
+      errorRequired:"Ce champ est obligatoire.",
+      errorInvalidEmail:"Veuillez saisir une adresse email valide.",
+      errorAmountRequired:"Veuillez indiquer un montant.",
+      errorAmountInvalid:"Veuillez saisir un montant valide.",
+      errorAmountZero:"Le montant doit être supérieur à zéro.",
+      errorAmountMax:"Le montant maximum autorisé est de $" + MAX_AMOUNT.toLocaleString("fr-FR") + " USD.",
+      errorMeruRequired:"Veuillez fournir votre MeruTag ou votre email.",
+      errorCashAppRequired:"Veuillez fournir votre Cash App Tag, votre numéro ou votre email.",
+      errorUsdcInvalid:"Veuillez saisir une adresse USDC valide (format 0x, 42 caractères).",
+      infoEyebrow:"Vos informations",
+      infoTitle:"Informations du compte à recharger",
+      labelFullName:"Nom et prénom enregistrés sur le service",
+      placeholderFullName:"Ex : Jean Baptiste",
+      labelWiseTag:"WiseTag",
+      placeholderWiseTag:"Ex : jean.baptiste",
+      labelWiseEmail:"Email Wise",
+      labelMeruTag:"MeruTag",
+      labelMeruEmail:"Email Meru",
+      labelPaypalEmail:"Email PayPal",
+      labelPanaEmail:"Email",
+      labelPanaPhone:"Numéro de téléphone",
+      labelCashTag:"Cash App $Cashtag",
+      labelCashPhone:"Numéro de téléphone",
+      labelCashEmail:"Email",
+      labelUsdcAddress:"Adresse USDC (réseau Base)",
+      atLeastOneHint:"Au moins un des champs ci-dessous est requis.",
+      usdcWarningTitle:"⚠️ Attention",
+      usdcWarningBody:"Vérifiez attentivement votre adresse de réception.\n\nL'adresse doit être compatible avec USDC sur le réseau Base.\n\nUne adresse incorrecte, une mauvaise blockchain ou une adresse qui ne supporte pas USDC sur Base peut entraîner une perte définitive des fonds.\n\nGONAF+ ne pourra pas récupérer les fonds envoyés à une mauvaise adresse.",
+      usdcCheckbox:"J'ai vérifié que cette adresse est correcte et compatible avec USDC sur Base.",
+      methodEyebrow:"Paiement",
+      methodTitle:"Choisissez votre méthode de paiement",
+      instrEyebrow:"Instructions",
+      instrTitle:"Effectuez votre paiement",
+      moncashName:"Nom",
+      moncashPhone:"Téléphone",
+      bancoRef:"No de référence",
+      bancoBank:"Banco",
+      bancoBeneficiary:"Nombre del Beneficiario",
+      bancoCurrency:"Moneda",
+      bancoAccountType:"Tipo de cuenta",
+      bancoRnc:"RNC",
+      bancoAccount:"Cuenta",
+      usdcNetwork:"Réseau",
+      usdcAddress:"Adresse",
+      usdcOnlyWarning:"Envoyez uniquement de l'USDC sur le réseau Base.",
+      paypalEmail:"Email",
+      paypalName:"Nom",
+      copy:"Copier",
+      copied:"Copié !",
+      proofEyebrow:"Preuve de paiement",
+      proofTitle:"Preuve de paiement",
+      proofDesc:"Après avoir effectué le paiement, téléversez une capture d'écran ou une photo de votre reçu.",
+      uploadMain:"Cliquez pour téléverser une image",
+      uploadSub:"JPG, JPEG, PNG ou WEBP — 5 Mo maximum",
+      proofErrorType:"Format non supporté. Utilisez JPG, JPEG, PNG ou WEBP.",
+      proofErrorSize:"Le fichier dépasse la taille maximale de 5 Mo.",
+      proofErrorRequired:"Veuillez téléverser une preuve de paiement pour continuer.",
+      summaryEyebrow:"Résumé",
+      summaryTitle:"Résumé de la commande",
+      summaryService:"Service",
+      summaryAmount:"Montant",
+      summaryCustomer:"Nom et prénom",
+      summaryMethod:"Méthode de paiement",
+      summaryProof:"Preuve de paiement",
+      confirmOrder:"Confirmer la commande",
+      doneTitle:"Commande créée",
+      doneMsg1:"Votre commande a été créée avec succès.",
+      doneMsg2:"Votre paiement sera vérifié avant le traitement de votre recharge.",
+      orderId:"Numéro de commande",
+      status:"Statut",
+      statusPending:"En attente",
+      newOrder:"Créer une nouvelle commande",
+      footer:"GONAF+ — Prototype frontend. Les commandes sont conservées localement sur cet appareil; aucun serveur n'est connecté pour le moment.",
+      remove:"Retirer",
+      history:"Historique",
+      historyTitle:"Historique des commandes",
+      historyDesc:"Retrouvez ici les commandes enregistrées sur cet appareil.",
+      historyEmpty:"Aucune commande enregistrée pour le moment.",
+      historyClear:"Effacer l’historique",
+      savedLocally:"Commande enregistrée sur cet appareil."
+    },
+    ht:{
+      heroTitle:"Rechaje sèvis ou prefere yo.",
+      heroDesc:"Rechaje kont Wise, Pana, Meru, PayPal, Cash App ak USDC sou Base rapidman.",
+      recharge:"Rechaje",
+      serviceSub:"Rechajman rapid e an sekirite",
+      amountEyebrow:"Kantite lajan",
+      amountTitle:"Ki kantite ou vle rechaje ?",
+      labelAmount:"Kantite an USD",
+      hintAmount:"Kantite maksimòm : $" + MAX_AMOUNT.toLocaleString("en-US") + " USD",
+      continue:"Kontinye",
+      back:"Retounen",
+      errorRequired:"Chan sa a obligatwa.",
+      errorInvalidEmail:"Tanpri mete yon adrès email ki valab.",
+      errorAmountRequired:"Tanpri mete yon kantite lajan.",
+      errorAmountInvalid:"Tanpri mete yon kantite lajan ki valab.",
+      errorAmountZero:"Kantite a dwe pi gran pase zewo.",
+      errorAmountMax:"Kantite maksimòm otorize a se $" + MAX_AMOUNT.toLocaleString("en-US") + " USD.",
+      errorMeruRequired:"Tanpri mete MeruTag ou oswa email ou.",
+      errorCashAppRequired:"Tanpri mete Cash App Tag, nimewo telefòn oswa email ou.",
+      errorUsdcInvalid:"Tanpri mete yon adrès USDC ki valab (fòma 0x, 42 karaktè).",
+      infoEyebrow:"Enfòmasyon ou",
+      infoTitle:"Enfòmasyon kont ou vle rechaje a",
+      labelFullName:"Non ak siyati ki anrejistre sou sèvis la",
+      placeholderFullName:"Egz. : Jean Baptiste",
+      labelWiseTag:"WiseTag",
+      placeholderWiseTag:"Egz. : jean.baptiste",
+      labelWiseEmail:"Email Wise",
+      labelMeruTag:"MeruTag",
+      labelMeruEmail:"Email Meru",
+      labelPaypalEmail:"Email PayPal",
+      labelPanaEmail:"Email",
+      labelPanaPhone:"Nimewo telefòn",
+      labelCashTag:"Cash App $Cashtag",
+      labelCashPhone:"Nimewo telefòn",
+      labelCashEmail:"Email",
+      labelUsdcAddress:"Adrès USDC (rezo Base)",
+      atLeastOneHint:"Omwen youn nan chan anba yo obligatwa.",
+      usdcWarningTitle:"⚠️ Atansyon",
+      usdcWarningBody:"Verifye adrès ou a byen.\n\nAdrès la dwe konpatib ak USDC sou rezo Base.\n\nSi adrès la mal ekri, si ou itilize move blockchain lan oswa si adrès la pa sipòte USDC sou Base, ou ka pèdi lajan an nèt.\n\nGONAF+ pap kapab rekipere lajan ki voye sou yon move adrès.",
+      usdcCheckbox:"Mwen verifye adrès sa a epi li kòrèk e li konpatib ak USDC sou Base.",
+      methodEyebrow:"Peman",
+      methodTitle:"Chwazi metòd peman ou",
+      instrEyebrow:"Enstriksyon",
+      instrTitle:"Fè peman ou",
+      moncashName:"Non",
+      moncashPhone:"Telefòn",
+      bancoRef:"No de référence",
+      bancoBank:"Banco",
+      bancoBeneficiary:"Nombre del Beneficiario",
+      bancoCurrency:"Moneda",
+      bancoAccountType:"Tipo de cuenta",
+      bancoRnc:"RNC",
+      bancoAccount:"Cuenta",
+      usdcNetwork:"Rezo",
+      usdcAddress:"Adrès",
+      usdcOnlyWarning:"Voye USDC sèlman sou rezo Base.",
+      paypalEmail:"Email",
+      paypalName:"Non",
+      copy:"Kopye",
+      copied:"Kopye !",
+      proofEyebrow:"Prèv peman",
+      proofTitle:"Prèv peman",
+      proofDesc:"Apre ou fin fè peman an, mete yon screenshot oswa foto resi peman ou a.",
+      uploadMain:"Klike pou mete yon imaj",
+      uploadSub:"JPG, JPEG, PNG oswa WEBP — 5 Mo maksimòm",
+      proofErrorType:"Fòma pa sipòte. Itilize JPG, JPEG, PNG oswa WEBP.",
+      proofErrorSize:"Fichye a depase gwosè maksimòm 5 Mo a.",
+      proofErrorRequired:"Tanpri mete yon prèv peman pou kontinye.",
+      summaryEyebrow:"Rezime",
+      summaryTitle:"Rezime kòmand lan",
+      summaryService:"Sèvis",
+      summaryAmount:"Kantite lajan",
+      summaryCustomer:"Non ak siyati",
+      summaryMethod:"Metòd peman",
+      summaryProof:"Prèv peman",
+      confirmOrder:"Konfime kòmand lan",
+      doneTitle:"Kòmand lan kreye",
+      doneMsg1:"Kòmand ou a kreye avèk siksè.",
+      doneMsg2:"N ap verifye peman an anvan nou trete rechaj la.",
+      orderId:"Nimewo kòmand",
+      status:"Estati",
+      statusPending:"An atant",
+      newOrder:"Kreye yon lòt kòmand",
+      footer:"GONAF+ — Pwototip frontend. Kòmand yo rete sou aparèy la; pa gen okenn sèvè ki konekte pou kounye a.",
+      remove:"Retire",
+      history:"Istwa",
+      historyTitle:"Istwa kòmand yo",
+      historyDesc:"Men kòmand ki anrejistre sou aparèy sa a.",
+      historyEmpty:"Pa gen okenn kòmand anrejistre pou kounye a.",
+      historyClear:"Efase istwa a",
+      savedLocally:"Kòmand lan anrejistre sou aparèy sa a."
+    }
+  };
+
+  /* ============================================================
+     STATE
+  ============================================================ */
+  var lang = localStorage.getItem("gonaf_lang") || "fr";
+  var history = [];
+  var currentScreen = "home";
+  var proofFile = null; // { fileName, fileType, fileSize, dataUrl }
+
+  function freshOrder(){
+    return {
+      orderId:"",
+      language:lang,
+      service:"",
+      amount:0,
+      customer:{
+        fullName:"", wisetag:"", wiseEmail:"",
+        merutag:"", meruEmail:"", paypalEmail:"",
+        panaEmail:"", panaPhone:"",
+        cashAppTag:"", cashAppPhone:"", cashAppEmail:"",
+        usdcBaseAddress:""
+      },
+      paymentMethod:"",
+      paymentProof:{ fileName:"", fileType:"", fileSize:"" },
+      status:"pending",
+      createdAt:""
+    };
+  }
+  var order = freshOrder();
+  var usdcChecked = false;
+
+  /* ============================================================
+     HELPERS
+  ============================================================ */
+  function t(key){ return T[lang][key]; }
+
+  function isValidEmail(v){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+  function isValidUsdcAddress(v){
+    return /^0x[a-fA-F0-9]{40}$/.test(v);
+  }
+  function formatMoney(n){
+    return "$" + Number(n).toFixed(2);
+  }
+  function formatFileSize(bytes){
+    if(bytes < 1024) return bytes + " B";
+    if(bytes < 1024*1024) return (bytes/1024).toFixed(1) + " KB";
+    return (bytes/(1024*1024)).toFixed(2) + " MB";
+  }
+  function generateOrderId(){
+    var year = new Date().getFullYear();
+    var rand = "";
+    var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    for(var i=0;i<6;i++){ rand += chars.charAt(Math.floor(Math.random()*chars.length)); }
+    return "GNF-" + year + "-" + rand;
+  }
+  function serviceLabel(id){
+    for(var i=0;i<SERVICES.length;i++){ if(SERVICES[i].id===id) return SERVICES[i].label; }
+    return id;
+  }
+  function methodLabel(id){
+    for(var i=0;i<METHODS.length;i++){ if(METHODS[i].id===id) return METHODS[i].label; }
+    return id;
+  }
+  function el(id){ return document.getElementById(id); }
+  function esc(s){
+    var d = document.createElement("div");
+    d.textContent = s == null ? "" : s;
+    return d.innerHTML;
+  }
+
+  /* ============================================================
+     NAVIGATION
+  ============================================================ */
+  function goTo(screen, opts){
+    opts = opts || {};
+    if(opts.push !== false){ history.push(currentScreen); }
+    currentScreen = screen;
+    renderScreen(screen);
+    document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("visible"); });
+    el("screen-" + screen).classList.add("visible");
+    window.scrollTo({top:0, behavior:"smooth"});
+    updateProgressRail(screen);
+  }
+  function goBack(){
+    var prev = history.pop();
+    if(!prev){ prev = "home"; }
+    currentScreen = prev;
+    renderScreen(prev);
+    document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("visible"); });
+    el("screen-" + prev).classList.add("visible");
+    window.scrollTo({top:0, behavior:"smooth"});
+    updateProgressRail(prev);
+  }
+
+  function updateProgressRail(screen){
+    var rail = el("progressRail");
+    if(screen === "home" || screen === "done" || screen === "history"){
+      rail.style.display = "none";
+      return;
+    }
+    rail.style.display = "flex";
+    var idx = STEP_SEQUENCE.indexOf(screen);
+    rail.innerHTML = "";
+    for(var i=0;i<STEP_SEQUENCE.length-1;i++){ // exclude "done" segment visualization end
+      var seg = document.createElement("div");
+      seg.className = "progress-seg";
+      if(i < idx) seg.className += " done";
+      else if(i === idx) seg.className += " active";
+      seg.innerHTML = "<i></i>";
+      rail.appendChild(seg);
+    }
+  }
+
+  /* ============================================================
+     RENDER: LANGUAGE-STATIC TEXT
+  ============================================================ */
+  function applyStaticText(){
+    document.documentElement.lang = lang;
+    el("btnFR").classList.toggle("active", lang==="fr");
+    el("btnHT").classList.toggle("active", lang==="ht");
+
+    el("heroTitle").textContent = t("heroTitle");
+    el("heroDesc").textContent = t("heroDesc");
+    el("continueFromAmount").textContent = t("continue");
+    el("continueFromInfo").textContent = t("continue");
+    el("continueFromInstr").textContent = t("continue");
+    el("continueFromProof").textContent = t("continue");
+    el("confirmOrder").textContent = t("confirmOrder");
+    el("newOrderBtn").textContent = t("newOrder");
+    el("backFromAmount").textContent = "←";
+    el("backFromInfo").textContent = "←";
+    el("backFromMethod").textContent = "←";
+    el("backFromInstr").textContent = "←";
+    el("backFromProof").textContent = "←";
+    el("backFromSummary").textContent = "←";
+    el("footerText").textContent = t("footer");
+    el("historyBtn").textContent = t("history");
+    el("historyEyebrow").textContent = t("history");
+    el("historyTitle").textContent = t("historyTitle");
+    el("historyDesc").textContent = t("historyDesc");
+    renderHistory();
+
+    renderServiceGrid();
+    renderScreen(currentScreen);
+  }
+
+  function renderServiceGrid(){
+    var grid = el("serviceGrid");
+    grid.innerHTML = "";
+    SERVICES.forEach(function(svc){
+      var card = document.createElement("button");
+      card.className = "service-card";
+      card.type = "button";
+      card.innerHTML =
+        '<div class="service-icon">' + esc(svc.icon) + '</div>' +
+        '<div class="service-name">' + esc(t("recharge")) + " " + esc(svc.label) + '</div>' +
+        '<div class="service-sub">' + esc(t("serviceSub")) + '</div>';
+      card.addEventListener("click", function(id){
+        return function(){ selectService(id); };
+      }(svc.id));
+      grid.appendChild(card);
+    });
+  }
+
+  /* ============================================================
+     SCREEN-SPECIFIC RENDER
+  ============================================================ */
+  function renderScreen(screen){
+    if(screen === "history") renderHistory();
+    if(screen === "amount") renderAmountScreen();
+    else if(screen === "info") renderInfoScreen();
+    else if(screen === "method") renderMethodScreen();
+    else if(screen === "instructions") renderInstructionsScreen();
+    else if(screen === "proof") renderProofScreen();
+    else if(screen === "summary") renderSummaryScreen();
+    else if(screen === "done") renderDoneScreen();
+  }
+
+  function selectService(serviceId){
+    order.service = serviceId;
+    el("inputAmount").value = order.amount ? order.amount : "";
+    goTo("amount");
+  }
+
+  /* ---- HISTORY ---- */
+  function getSavedOrders(){
+    try { var x=localStorage.getItem(HISTORY_KEY); x=x?JSON.parse(x):[]; return Array.isArray(x)?x:[]; } catch(e){ return []; }
+  }
+  function saveHistoryOrder(o){
+    try { var a=getSavedOrders(); a.unshift({orderId:o.orderId,service:o.service,amount:o.amount,paymentMethod:o.paymentMethod,status:o.status,createdAt:o.createdAt}); localStorage.setItem(HISTORY_KEY,JSON.stringify(a.slice(0,30))); } catch(e){}
+  }
+  function formatDate(iso){ try{return new Intl.DateTimeFormat(lang==="fr"?"fr-FR":"ht-HT",{dateStyle:"medium",timeStyle:"short"}).format(new Date(iso));}catch(e){return iso||"";} }
+  function renderHistory(){
+    var box=el("historyContent"); if(!box)return; var a=getSavedOrders();
+    if(!a.length){box.innerHTML='<div class="history-empty">'+esc(t("historyEmpty"))+'</div>';return;}
+    var h=""; a.forEach(function(o){h+='<div class="history-item"><div class="history-top"><div class="history-id">'+esc(o.orderId)+'</div><span class="history-status">'+esc(lang==="fr"?"En attente":"An atant")+'</span></div><div class="history-date">'+esc(formatDate(o.createdAt))+'</div><div class="history-meta" style="margin-top:10px;"><div><span>'+esc(t("summaryService"))+'</span><br><strong>'+esc(serviceLabel(o.service))+'</strong></div><div><span>'+esc(t("summaryAmount"))+'</span><br><strong>'+esc(formatMoney(o.amount))+'</strong></div></div></div>';});
+    h+='<button class="btn btn-secondary btn-full" id="clearHistoryBtn" type="button">'+esc(t("historyClear"))+'</button>'; box.innerHTML=h;
+    el("clearHistoryBtn").addEventListener("click",function(){localStorage.removeItem(HISTORY_KEY);renderHistory();});
+  }
+  function showToast(msg){var x=el("toast");if(!x)return;x.textContent=msg;x.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(function(){x.classList.remove("show");},2200);}
+  el("historyBtn").addEventListener("click",function(){goTo("history");});
+  el("backFromHistory").addEventListener("click",goBack);
+
+  /* ---- AMOUNT ---- */
+  function renderAmountScreen(){
+    el("amountEyebrow").textContent = t("amountEyebrow") + " · " + serviceLabel(order.service);
+    el("amountTitle").textContent = t("amountTitle");
+    el("labelAmount").innerHTML = esc(t("labelAmount")) + ' <span class="req">*</span>';
+    el("hintAmount").textContent = t("hintAmount");
+    el("errorAmount").textContent = "";
+    el("field-amount").classList.remove("has-error");
+  }
+
+  function validateAmount(){
+    var raw = el("inputAmount").value.trim().replace(",", ".");
+    var errEl = el("errorAmount");
+    var fieldEl = el("field-amount");
+    if(raw === ""){
+      fieldEl.classList.add("has-error"); errEl.textContent = t("errorAmountRequired");
+      return null;
+    }
+    if(!/^\d+(\.\d{1,2})?$/.test(raw)){
+      fieldEl.classList.add("has-error"); errEl.textContent = t("errorAmountInvalid");
+      return null;
+    }
+    var num = parseFloat(raw);
+    if(isNaN(num)){
+      fieldEl.classList.add("has-error"); errEl.textContent = t("errorAmountInvalid");
+      return null;
+    }
+    if(num <= 0){
+      fieldEl.classList.add("has-error"); errEl.textContent = t("errorAmountZero");
+      return null;
+    }
+    if(num > MAX_AMOUNT){
+      fieldEl.classList.add("has-error"); errEl.textContent = t("errorAmountMax");
+      return null;
+    }
+    fieldEl.classList.remove("has-error"); errEl.textContent = "";
+    return num;
+  }
+
+  el("continueFromAmount").addEventListener("click", function(){
+    var amt = validateAmount();
+    if(amt === null) return;
+    order.amount = amt;
+    goTo("info");
+  });
+  el("backFromAmount").addEventListener("click", goBack);
+  el("inputAmount").addEventListener("input", function(){
+    el("field-amount").classList.remove("has-error");
+    el("errorAmount").textContent = "";
+  });
+
+  /* ---- CUSTOMER INFO ---- */
+  function fieldTemplate(fieldId, labelText, required, placeholder, type){
+    type = type || "text";
+    return (
+      '<div class="field" id="field-' + fieldId + '">' +
+        '<label for="input-' + fieldId + '">' + esc(labelText) + (required ? ' <span class="req">*</span>' : '') + '</label>' +
+        '<input type="' + type + '" id="input-' + fieldId + '"' + (placeholder ? ' placeholder="' + esc(placeholder) + '"' : '') + '>' +
+        '<p class="field-error" id="error-' + fieldId + '"></p>' +
+      '</div>'
+    );
+  }
+
+  function renderInfoScreen(){
+    el("infoEyebrow").textContent = t("infoEyebrow") + " · " + serviceLabel(order.service);
+    el("infoTitle").textContent = t("infoTitle");
+    var html = fieldTemplate("fullName", t("labelFullName"), true, t("placeholderFullName"));
+
+    if(order.service === "wise"){
+      html += fieldTemplate("wisetag", t("labelWiseTag"), true, t("placeholderWiseTag"));
+      html += fieldTemplate("wiseEmail", t("labelWiseEmail"), true, "you@example.com", "email");
+    } else if(order.service === "meru"){
+      html += '<p class="field-hint" style="margin:-6px 0 14px;">' + esc(t("atLeastOneHint")) + '</p>';
+      html += fieldTemplate("merutag", t("labelMeruTag"), false, "");
+      html += fieldTemplate("meruEmail", t("labelMeruEmail"), false, "you@example.com", "email");
+    } else if(order.service === "paypal"){
+      html += fieldTemplate("paypalEmail", t("labelPaypalEmail"), true, "you@example.com", "email");
+    } else if(order.service === "pana"){
+      html += fieldTemplate("panaEmail", t("labelPanaEmail"), true, "you@example.com", "email");
+      html += fieldTemplate("panaPhone", t("labelPanaPhone"), true, "+509 ....", "tel");
+    } else if(order.service === "cashapp"){
+      html += '<p class="field-hint" style="margin:-6px 0 14px;">' + esc(t("atLeastOneHint")) + '</p>';
+      html += fieldTemplate("cashAppTag", t("labelCashTag"), false, "$yourtag");
+      html += fieldTemplate("cashAppPhone", t("labelCashPhone"), false, "+1 ....", "tel");
+      html += fieldTemplate("cashAppEmail", t("labelCashEmail"), false, "you@example.com", "email");
+    } else if(order.service === "usdc"){
+      html += fieldTemplate("usdcBaseAddress", t("labelUsdcAddress"), true, "0x...");
+      html += '<div class="warning-card">' +
+                '<p class="warning-title">' + esc(t("usdcWarningTitle")) + '</p>' +
+                '<p class="warning-body">' + esc(t("usdcWarningBody")) + '</p>' +
+                '<div class="checkbox-row">' +
+                  '<input type="checkbox" id="usdcCheckbox">' +
+                  '<label for="usdcCheckbox">' + esc(t("usdcCheckbox")) + '</label>' +
+                '</div>' +
+              '</div>';
+    }
+
+    el("infoFields").innerHTML = html;
+
+    // restore previously entered values
+    var map = {
+      fullName:order.customer.fullName, wisetag:order.customer.wisetag, wiseEmail:order.customer.wiseEmail,
+      merutag:order.customer.merutag, meruEmail:order.customer.meruEmail, paypalEmail:order.customer.paypalEmail,
+      panaEmail:order.customer.panaEmail, panaPhone:order.customer.panaPhone,
+      cashAppTag:order.customer.cashAppTag, cashAppPhone:order.customer.cashAppPhone, cashAppEmail:order.customer.cashAppEmail,
+      usdcBaseAddress:order.customer.usdcBaseAddress
+    };
+    Object.keys(map).forEach(function(k){
+      var inp = el("input-" + k);
+      if(inp && map[k]) inp.value = map[k];
+    });
+
+    if(order.service === "usdc"){
+      var cb = el("usdcCheckbox");
+      cb.checked = usdcChecked;
+      cb.addEventListener("change", function(){
+        usdcChecked = cb.checked;
+        updateInfoContinueState();
+      });
+    }
+    updateInfoContinueState();
+
+    // clear error on input
+    document.querySelectorAll("#infoFields input").forEach(function(inp){
+      inp.addEventListener("input", function(){
+        var fieldId = inp.id.replace("input-", "");
+        el("field-" + fieldId).classList.remove("has-error");
+        el("error-" + fieldId).textContent = "";
+        updateInfoContinueState();
+      });
+    });
+  }
+
+  function updateInfoContinueState(){
+    var btn = el("continueFromInfo");
+    if(order.service === "usdc"){
+      var addr = el("input-usdcBaseAddress") ? el("input-usdcBaseAddress").value.trim() : "";
+      btn.disabled = !usdcChecked;
+    } else {
+      btn.disabled = false;
+    }
+  }
+
+  function setFieldError(fieldId, message){
+    el("field-" + fieldId).classList.add("has-error");
+    el("error-" + fieldId).textContent = message;
+  }
+  function clearFieldError(fieldId){
+    var f = el("field-" + fieldId);
+    if(f){ f.classList.remove("has-error"); el("error-" + fieldId).textContent = ""; }
+  }
+
+  function validateInfo(){
+    var valid = true;
+    var fullName = el("input-fullName").value.trim();
+    clearFieldError("fullName");
+    if(fullName === ""){ setFieldError("fullName", t("errorRequired")); valid = false; }
+
+    if(order.service === "wise"){
+      var wisetag = el("input-wisetag").value.trim();
+      var wiseEmail = el("input-wiseEmail").value.trim();
+      clearFieldError("wisetag"); clearFieldError("wiseEmail");
+      if(wisetag === ""){ setFieldError("wisetag", t("errorRequired")); valid = false; }
+      if(wiseEmail === ""){ setFieldError("wiseEmail", t("errorRequired")); valid = false; }
+      else if(!isValidEmail(wiseEmail)){ setFieldError("wiseEmail", t("errorInvalidEmail")); valid = false; }
+      if(valid){
+        order.customer.wisetag = wisetag; order.customer.wiseEmail = wiseEmail;
+      }
+    } else if(order.service === "meru"){
+      var merutag = el("input-merutag").value.trim();
+      var meruEmail = el("input-meruEmail").value.trim();
+      clearFieldError("merutag"); clearFieldError("meruEmail");
+      if(merutag === "" && meruEmail === ""){
+        setFieldError("merutag", t("errorMeruRequired"));
+        valid = false;
+      } else if(meruEmail !== "" && !isValidEmail(meruEmail)){
+        setFieldError("meruEmail", t("errorInvalidEmail")); valid = false;
+      }
+      if(valid){ order.customer.merutag = merutag; order.customer.meruEmail = meruEmail; }
+    } else if(order.service === "paypal"){
+      var paypalEmail = el("input-paypalEmail").value.trim();
+      clearFieldError("paypalEmail");
+      if(paypalEmail === ""){ setFieldError("paypalEmail", t("errorRequired")); valid = false; }
+      else if(!isValidEmail(paypalEmail)){ setFieldError("paypalEmail", t("errorInvalidEmail")); valid = false; }
+      if(valid){ order.customer.paypalEmail = paypalEmail; }
+    } else if(order.service === "pana"){
+      var panaEmail = el("input-panaEmail").value.trim();
+      var panaPhone = el("input-panaPhone").value.trim();
+      clearFieldError("panaEmail"); clearFieldError("panaPhone");
+      if(panaEmail === ""){ setFieldError("panaEmail", t("errorRequired")); valid = false; }
+      else if(!isValidEmail(panaEmail)){ setFieldError("panaEmail", t("errorInvalidEmail")); valid = false; }
+      if(panaPhone === ""){ setFieldError("panaPhone", t("errorRequired")); valid = false; }
+      if(valid){ order.customer.panaEmail = panaEmail; order.customer.panaPhone = panaPhone; }
+    } else if(order.service === "cashapp"){
+      var cashAppTag = el("input-cashAppTag").value.trim();
+      var cashAppPhone = el("input-cashAppPhone").value.trim();
+      var cashAppEmail = el("input-cashAppEmail").value.trim();
+      clearFieldError("cashAppTag"); clearFieldError("cashAppPhone"); clearFieldError("cashAppEmail");
+      if(cashAppTag === "" && cashAppPhone === "" && cashAppEmail === ""){
+        setFieldError("cashAppTag", t("errorCashAppRequired"));
+        valid = false;
+      } else if(cashAppEmail !== "" && !isValidEmail(cashAppEmail)){
+        setFieldError("cashAppEmail", t("errorInvalidEmail")); valid = false;
+      }
+      if(valid){
+        order.customer.cashAppTag = cashAppTag; order.customer.cashAppPhone = cashAppPhone; order.customer.cashAppEmail = cashAppEmail;
+      }
+    } else if(order.service === "usdc"){
+      var addr = el("input-usdcBaseAddress").value.trim();
+      clearFieldError("usdcBaseAddress");
+      if(addr === ""){ setFieldError("usdcBaseAddress", t("errorRequired")); valid = false; }
+      else if(!isValidUsdcAddress(addr)){ setFieldError("usdcBaseAddress", t("errorUsdcInvalid")); valid = false; }
+      if(!usdcChecked){ valid = false; }
+      if(valid){ order.customer.usdcBaseAddress = addr; }
+    }
+
+    if(valid){ order.customer.fullName = fullName; }
+    return valid;
+  }
+
+  el("continueFromInfo").addEventListener("click", function(){
+    if(!validateInfo()) return;
+    goTo("method");
+  });
+  el("backFromInfo").addEventListener("click", goBack);
+
+  /* ---- PAYMENT METHOD ---- */
+  function renderMethodScreen(){
+    el("methodEyebrow").textContent = t("methodEyebrow") + " · " + serviceLabel(order.service);
+    el("methodTitle").textContent = t("methodTitle");
+    var list = el("methodList");
+    list.innerHTML = "";
+    METHODS.forEach(function(m){
+      if(order.service === "paypal" && m.id === "paypal") return;
+      if(order.service === "usdc" && m.id === "usdc") return;
+      var opt = document.createElement("div");
+      opt.className = "method-option";
+      opt.setAttribute("role","button");
+      opt.setAttribute("tabindex","0");
+      opt.innerHTML =
+        '<div class="method-badge">' + esc(m.badge) + '</div>' +
+        '<div class="method-name">' + esc(m.label) + '</div>' +
+        '<div class="method-arrow">→</div>';
+      opt.addEventListener("click", function(id){
+        return function(){ selectMethod(id); };
+      }(m.id));
+      opt.addEventListener("keydown", function(id){
+        return function(e){ if(e.key==="Enter" || e.key===" "){ e.preventDefault(); selectMethod(id); } };
+      }(m.id));
+      list.appendChild(opt);
+    });
+  }
+  function selectMethod(methodId){
+    order.paymentMethod = methodId;
+    goTo("instructions");
+  }
+  el("backFromMethod").addEventListener("click", goBack);
+
+  /* ---- PAYMENT INSTRUCTIONS ---- */
+  function copyToClipboard(text, btn){
+    function done(){
+      var original = btn.getAttribute("data-label");
+      btn.textContent = t("copied");
+      btn.classList.add("copied");
+      setTimeout(function(){
+        btn.textContent = original;
+        btn.classList.remove("copied");
+      }, 1600);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text); done(); });
+    } else {
+      fallbackCopy(text); done();
+    }
+  }
+  function fallbackCopy(text){
+    var ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.left = "-9999px";
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  function infoRow(label, value, copyValue){
+    var copyBtnHtml = copyValue ? '<button type="button" class="copy-btn" data-label="' + esc(t("copy")) + '" data-copy="' + esc(copyValue) + '">' + esc(t("copy")) + '</button>' : "";
+    return '<div class="info-row"><span class="info-label">' + esc(label) + '</span>' +
+      (copyValue ? copyBtnHtml : '<span class="info-value">' + esc(value) + '</span>') +
+      '</div>' + (copyValue ? '<div class="info-row" style="border-top:none; padding-top:0;"><span class="info-value" style="text-align:left;">' + esc(value) + '</span></div>' : '');
+  }
+
+  function renderInstructionsScreen(){
+    el("instrEyebrow").textContent = t("instrEyebrow") + " · " + methodLabel(order.paymentMethod);
+    el("instrTitle").textContent = t("instrTitle");
+    var html = "";
+
+    if(order.paymentMethod === "moncash"){
+      var p = PAYMENT_INFO.moncash;
+      html += '<div class="info-card">' +
+        rowSimple(t("moncashName"), p.name) +
+        rowCopy(t("moncashPhone"), p.phone) +
+        '</div>';
+    } else if(order.paymentMethod === "banco"){
+      var b = PAYMENT_INFO.banco;
+      html += '<div class="info-card">' +
+        rowSimple(t("bancoRef"), b.ref) +
+        rowSimple(t("bancoBank"), b.bank) +
+        rowSimple(t("bancoBeneficiary"), b.beneficiary) +
+        rowSimple(t("bancoCurrency"), b.currency) +
+        rowSimple(t("bancoAccountType"), b.accountType) +
+        rowSimple(t("bancoRnc"), b.rnc) +
+        rowCopy(t("bancoAccount"), b.account) +
+        '</div>';
+    } else if(order.paymentMethod === "usdc"){
+      var u = PAYMENT_INFO.usdc;
+      html += '<div class="banner-note">' + esc(t("usdcOnlyWarning")) + '</div>';
+      html += '<div class="info-card">' +
+        rowSimple(t("usdcNetwork"), u.network) +
+        rowCopy(t("usdcAddress"), u.address) +
+        '</div>';
+    } else if(order.paymentMethod === "paypal"){
+      var pp = PAYMENT_INFO.paypal;
+      html += '<div class="info-card">' +
+        rowCopy(t("paypalEmail"), pp.email) +
+        rowSimple(t("paypalName"), pp.name) +
+        '</div>';
+    }
+
+    el("instrContent").innerHTML = html;
+
+    document.querySelectorAll(".copy-btn[data-copy]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        copyToClipboard(btn.getAttribute("data-copy"), btn);
+      });
+    });
+  }
+  function rowSimple(label, value){
+    return '<div class="info-row"><span class="info-label">' + esc(label) + '</span><span class="info-value">' + esc(value) + '</span></div>';
+  }
+  function rowCopy(label, value){
+    return '<div class="info-row">' +
+      '<div><div class="info-label" style="margin-bottom:4px;">' + esc(label) + '</div><div class="info-value" style="text-align:left;">' + esc(value) + '</div></div>' +
+      '<button type="button" class="copy-btn" data-label="' + esc(t("copy")) + '" data-copy="' + esc(value) + '">' + esc(t("copy")) + '</button>' +
+      '</div>';
+  }
+
+  el("continueFromInstr").addEventListener("click", function(){
+    goTo("proof");
+  });
+  el("backFromInstr").addEventListener("click", goBack);
+
+  /* ---- PROOF ---- */
+  function renderProofScreen(){
+    el("proofEyebrow").textContent = t("proofEyebrow");
+    el("proofTitle").textContent = t("proofTitle");
+    el("proofDesc").textContent = t("proofDesc");
+    el("errorProof").style.display = "none";
+    renderProofArea();
+  }
+
+  function renderProofArea(){
+    var area = el("proofArea");
+    if(!proofFile){
+      area.innerHTML =
+        '<label class="upload-zone" for="fileInput">' +
+          '<div class="icon">⬆︎</div>' +
+          '<div class="main">' + esc(t("uploadMain")) + '</div>' +
+          '<div class="sub">' + esc(t("uploadSub")) + '</div>' +
+        '</label>' +
+        '<input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png,image/webp">';
+      el("fileInput").addEventListener("change", handleFileSelect);
+    } else {
+      area.innerHTML =
+        '<div class="proof-preview">' +
+          '<img src="' + proofFile.dataUrl + '" alt="preview">' +
+          '<div class="proof-meta">' +
+            '<div class="proof-filename">' + esc(proofFile.fileName) + '</div>' +
+            '<div class="proof-filesize">' + esc(formatFileSize(proofFile.fileSize)) + '</div>' +
+          '</div>' +
+          '<button type="button" class="proof-remove" id="removeProofBtn" aria-label="' + esc(t("remove")) + '">✕</button>' +
+        '</div>';
+      el("removeProofBtn").addEventListener("click", function(){
+        proofFile = null;
+        renderProofArea();
+      });
+    }
+  }
+
+  function handleFileSelect(e){
+    var file = e.target.files && e.target.files[0];
+    if(!file) return;
+    var allowedTypes=["image/jpeg","image/jpg","image/png","image/webp"]; var ext=(file.name.split(".").pop()||"").toLowerCase(); var typeOK=allowedTypes.indexOf(file.type)!==-1 || (file.type==="" && ["jpg","jpeg","png","webp"].indexOf(ext)!==-1);
+    var errEl = el("errorProof");
+    if(!typeOK){
+      errEl.style.display = "block";
+      errEl.textContent = t("proofErrorType");
+      return;
+    }
+    if(file.size > MAX_PROOF_SIZE){
+      errEl.style.display = "block";
+      errEl.textContent = t("proofErrorSize");
+      return;
+    }
+    errEl.style.display = "none";
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      proofFile = {
+        fileName:file.name,
+        fileType:file.type,
+        fileSize:file.size,
+        dataUrl:ev.target.result
+      };
+      renderProofArea();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  el("continueFromProof").addEventListener("click", function(){
+    if(!proofFile){
+      var errEl = el("errorProof");
+      errEl.style.display = "block";
+      errEl.textContent = t("proofErrorRequired");
+      return;
+    }
+    order.paymentProof = {
+      fileName:proofFile.fileName,
+      fileType:proofFile.fileType,
+      fileSize:formatFileSize(proofFile.fileSize)
+    };
+    goTo("summary");
+  });
+  el("backFromProof").addEventListener("click", goBack);
+
+  /* ---- SUMMARY ---- */
+  function accountInfoLines(){
+    var lines = [];
+    if(order.service === "wise"){
+      lines.push([t("labelWiseTag"), order.customer.wisetag]);
+      lines.push([t("labelWiseEmail"), order.customer.wiseEmail]);
+    } else if(order.service === "meru"){
+      if(order.customer.merutag) lines.push([t("labelMeruTag"), order.customer.merutag]);
+      if(order.customer.meruEmail) lines.push([t("labelMeruEmail"), order.customer.meruEmail]);
+    } else if(order.service === "paypal"){
+      lines.push([t("labelPaypalEmail"), order.customer.paypalEmail]);
+    } else if(order.service === "pana"){
+      lines.push([t("labelPanaEmail"), order.customer.panaEmail]);
+      lines.push([t("labelPanaPhone"), order.customer.panaPhone]);
+    } else if(order.service === "cashapp"){
+      if(order.customer.cashAppTag) lines.push([t("labelCashTag"), order.customer.cashAppTag]);
+      if(order.customer.cashAppPhone) lines.push([t("labelCashPhone"), order.customer.cashAppPhone]);
+      if(order.customer.cashAppEmail) lines.push([t("labelCashEmail"), order.customer.cashAppEmail]);
+    } else if(order.service === "usdc"){
+      lines.push([t("labelUsdcAddress"), order.customer.usdcBaseAddress]);
+    }
+    return lines;
+  }
+
+  function renderSummaryScreen(){
+    el("summaryEyebrow").textContent = t("summaryEyebrow");
+    el("summaryTitle").textContent = t("summaryTitle");
+
+    var html = '<div class="info-card">';
+    html += rowSimple(t("summaryService"), t("recharge") + " " + serviceLabel(order.service));
+    html += rowSimple(t("summaryAmount"), formatMoney(order.amount));
+    html += rowSimple(t("summaryCustomer"), order.customer.fullName);
+    accountInfoLines().forEach(function(pair){
+      html += rowSimple(pair[0], pair[1]);
+    });
+    html += rowSimple(t("summaryMethod"), methodLabel(order.paymentMethod));
+    html += '</div>';
+
+    html += '<div class="info-card">' +
+      '<span class="info-label">' + esc(t("summaryProof")) + '</span>' +
+      '<div style="margin-top:10px;">' +
+        (proofFile ? '<img src="' + proofFile.dataUrl + '" alt="proof" style="width:100%; max-width:220px; border-radius:12px; border:1px solid var(--gray-100);">' : '') +
+        '<div class="proof-filename" style="margin-top:8px;">' + esc(order.paymentProof.fileName) + '</div>' +
+        '<div class="proof-filesize">' + esc(order.paymentProof.fileSize) + '</div>' +
+      '</div>' +
+    '</div>';
+
+    el("summaryContent").innerHTML = html;
+  }
+
+  el("confirmOrder").addEventListener("click", function(){
+    if(el("confirmOrder").disabled) return;
+    el("confirmOrder").disabled=true;
+    order.orderId = generateOrderId();
+    order.language = lang;
+    order.createdAt = new Date().toISOString();
+    order.status = "pending";
+    submitOrder(order);
+    saveHistoryOrder(order);
+    showToast(t("savedLocally"));
+    goTo("done");
+  });
+  el("backFromSummary").addEventListener("click", goBack);
+
+  /* ---- DONE ---- */
+  function renderDoneScreen(){
+    el("doneTitle").textContent = t("doneTitle");
+    el("doneMsg1").textContent = t("doneMsg1");
+    el("doneMsg2").textContent = t("doneMsg2");
+    var html = "";
+    html += rowSimple(t("orderId"), order.orderId);
+    html += rowSimple(t("summaryService"), t("recharge") + " " + serviceLabel(order.service));
+    html += rowSimple(t("summaryAmount"), formatMoney(order.amount));
+    html += rowSimple(t("summaryMethod"), methodLabel(order.paymentMethod));
+    html += '<div class="info-row"><span class="info-label">' + esc(t("status")) + '</span><span class="status-pill">' + esc(t("statusPending")) + '</span></div>';
+    el("doneSummary").innerHTML = html;
+  }
+
+  el("newOrderBtn").addEventListener("click", function(){
+    order = freshOrder();
+    proofFile = null;
+    el("confirmOrder").disabled=false;
+    usdcChecked = false;
+    history = [];
+    goTo("home", {push:false});
+  });
+
+  /* ============================================================
+     FUTURE-BACKEND STUBS (Supabase / Telegram integration later)
+  ============================================================ */
+  function submitOrder(orderData){
+    // Prepares the order object for future backend submission.
+    // Currently frontend-only: no network request is made.
+    saveOrder(orderData);
+    uploadPaymentProof(proofFile);
+    notifyAdmin(orderData);
+    return orderData;
+  }
+  function uploadPaymentProof(file){
+    // Placeholder for future Supabase Storage upload.
+    // Currently the file is only kept in browser memory for preview.
+    return file;
+  }
+  function saveOrder(orderData){
+    // Placeholder for future Supabase Database insert.
+    return orderData;
+  }
+  function notifyAdmin(orderData){
+    // Placeholder for future Telegram Bot notification to GONAF+ admin dashboard.
+    return orderData;
+  }
+
+  /* ============================================================
+     LANGUAGE SWITCH
+  ============================================================ */
+  function setLang(newLang){
+    lang = newLang;
+    localStorage.setItem("gonaf_lang", lang);
+    applyStaticText();
+  }
+  el("btnFR").addEventListener("click", function(){ setLang("fr"); });
+  el("btnHT").addEventListener("click", function(){ setLang("ht"); });
+  el("logoHome").addEventListener("click", function(){
+    history = [];
+    goTo("home", {push:false});
+  });
+
+  /* ============================================================
+     INIT
+  ============================================================ */
+  applyStaticText();
+  el("screen-home").classList.add("visible");
+  updateProgressRail("home");
+
+})();
+</script>
+</body>
+</html>
