@@ -305,23 +305,46 @@ footer a:hover{color:var(--accent-1)}
 <script>
 /* ============================================================
    CONFIG — Supabase
-   This is a fully static frontend: no build step, no .env,
-   no server. The public/publishable anon key below is safe to
-   ship in client code — it is the key Supabase designs for
-   exactly this purpose. Row Level Security policies on the
-   `orders`, `settings` tables and the `payment-proofs` bucket
-   are what actually control what this key is allowed to do.
    ============================================================ */
 const SUPABASE_URL = "https://qupcrthkmdiburmhzgnr.supabase.co";
-// Paste your Supabase project's public anon/publishable key below
-// (Project Settings → API → "anon public" key). Never put the
-// service_role key here.
 const SUPABASE_ANON_KEY = "sb_publishable_sdxacBnCtTZptfCCCQbtcQ_5cXseYBF";
 
 let sb = null;
+
 try{
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-}catch(e){ console.error("Supabase init error:", e); }
+}catch(e){
+  console.error("Supabase init error:", e);
+}
+
+
+/* ==================== DIAGNOSTIC ==================== */
+
+(async () => {
+  const { data, error } = await sb.auth.getSession();
+
+  console.log("SUPABASE SESSION:", data);
+  console.log("SUPABASE SESSION ERROR:", error);
+
+  const { data: testData, error: testError } = await sb
+    .from("orders")
+    .insert({
+      order_id: "BROWSER-TEST-" + Date.now(),
+      language: "ht",
+      service: "wise",
+      amount: 1,
+      customer_full_name: "Browser Test",
+      payment_method: "moncash",
+      status: "pending",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+
+  console.log("BROWSER INSERT RESULT:", testData);
+  console.log("BROWSER INSERT ERROR:", testError);
+})();
 
 /* ============================================================
    I18N
