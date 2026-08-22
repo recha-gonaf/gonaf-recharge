@@ -1,0 +1,2111 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06101d">
+<title>GONAF+ | Finance</title>
+<style>
+/* ===== Design tokens ===== */
+:root {
+  --bg: #050b14;
+  --card: #0b1625;
+  --card2: #101d2e;
+  --text: #f7fafc;
+  --muted: #91a0b5;
+  --line: rgba(255, 255, 255, .08);
+  --a: #20c7d8;
+  --b: #5578ff;
+  --ok: #35d49a;
+  --bad: #ff6d7b;
+  --warn: #f5c95d;
+}
+
+/* ===== Base ===== */
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+}
+button, input { font: inherit; }
+button { cursor: pointer; }
+body { min-height: 100vh; }
+h1 { font-size: 30px; letter-spacing: -.05em; margin: 5px 0; }
+p { color: var(--muted); }
+
+/* ===== App shell / header ===== */
+.app {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 0, rgba(32,199,216,.13), transparent 30%),
+    radial-gradient(circle at 100% 20%, rgba(85,120,255,.12), transparent 28%);
+}
+.shell { width: min(1120px, 100%); margin: auto; padding: 0 18px 105px; }
+.top {
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(5, 11, 20, .84);
+  backdrop-filter: blur(18px);
+}
+.logo {
+  border: 0;
+  background: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 900;
+  font-size: 20px;
+}
+.logo img { width: 39px; height: 39px; object-fit: contain; }
+.icons { display: flex; gap: 8px; }
+.icon {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff08;
+  color: white;
+}
+
+/* ===== Views ===== */
+.view { display: none; }
+.view.active { display: block; }
+.hero { padding: 24px 0 16px; }
+.hero small { color: var(--muted); }
+
+/* ===== Wallet card ===== */
+.wallet {
+  padding: 24px;
+  border-radius: 29px;
+  border: 1px solid #20c7d833;
+  background: linear-gradient(135deg, #20c7d826, #5578ff1c, #ffffff05);
+  min-height: 205px;
+  box-shadow: 0 22px 60px #0005;
+  overflow: hidden;
+  position: relative;
+}
+.wallet:after {
+  content: "";
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  right: -90px;
+  top: -100px;
+  background: #20c7d81a;
+}
+.wallet > * { position: relative; z-index: 1; }
+.wallet-head {
+  display: flex;
+  justify-content: space-between;
+  color: #b7c3d4;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.balance { font-size: 42px; font-weight: 850; letter-spacing: -.06em; margin: 34px 0; }
+.wallet-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+
+/* ===== Buttons ===== */
+.primary {
+  border: 0;
+  border-radius: 15px;
+  padding: 12px 17px;
+  background: linear-gradient(135deg, var(--a), #4da4ff);
+  color: #041019;
+  font-weight: 850;
+}
+.secondary {
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 12px 17px;
+  background: #ffffff08;
+  color: white;
+  font-weight: 750;
+}
+
+/* ===== Section headers ===== */
+.section { display: flex; justify-content: space-between; align-items: center; margin: 28px 0 13px; }
+.section h2 { font-size: 18px; margin: 0; }
+.section button { border: 0; background: none; color: var(--a); font-weight: 800; }
+
+/* ===== Service grid ===== */
+.services { display: grid; grid-template-columns: repeat(2, 1fr); gap: 11px; }
+.service {
+  min-height: 122px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 21px;
+  background: #ffffff06;
+  color: white;
+  padding: 15px;
+}
+.service:hover { border-color: #20c7d844; transform: translateY(-1px); }
+.service img { width: 39px; height: 39px; object-fit: contain; display: block; margin-bottom: 13px; }
+.service b { display: block; }
+.service span { font-size: 12px; color: var(--muted); }
+
+/* ===== Transaction list ===== */
+.txlist { display: grid; gap: 9px; }
+.tx {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #ffffff05;
+  color: white;
+  text-align: left;
+}
+.txlogo {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: #ffffff08;
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.txlogo img { width: 29px; height: 29px; object-fit: contain; }
+.txmain { flex: 1; min-width: 0; }
+.txmain b, .txmain small { display: block; }
+.txmain small { color: var(--muted); margin-top: 4px; }
+.txright { text-align: right; }
+.status {
+  font-size: 10px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  font-weight: 800;
+  display: inline-block;
+  margin-top: 4px;
+}
+.pending { color: var(--warn); background: #f5c95d12; }
+.completed { color: var(--ok); background: #35d49a12; }
+.rejected { color: var(--bad); background: #ff6d7b12; }
+
+/* ===== Bottom navigation ===== */
+.bottom {
+  position: fixed;
+  z-index: 30;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 78px;
+  background: #050b14eb;
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--line);
+}
+.nav {
+  width: min(600px, 100%);
+  height: 100%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.nav button { border: 0; background: none; color: #718096; font-size: 11px; font-weight: 800; }
+.nav button.active { color: var(--a); }
+.nav i { display: block; font-style: normal; font-size: 21px; margin-bottom: 4px; }
+
+/* ===== Page / cards ===== */
+.page { padding: 24px 0; }
+.page h1 { margin-bottom: 4px; }
+.card {
+  border: 1px solid var(--line);
+  background: #ffffff06;
+  border-radius: 24px;
+  padding: 19px;
+  margin: 13px 0;
+}
+.virtual {
+  height: 215px;
+  padding: 22px;
+  border-radius: 27px;
+  background: linear-gradient(135deg, #0c2832, #10243e 55%, #11162c);
+  border: 1px solid #20c7d82b;
+  position: relative;
+  overflow: hidden;
+}
+.chip {
+  width: 42px;
+  height: 31px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #d5d9dc, #67727d);
+  margin-top: 43px;
+}
+.soon { color: var(--a); font-size: 11px; text-transform: uppercase; letter-spacing: .09em; font-weight: 850; }
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  background: #ffffff05;
+  padding: 4px;
+  border-radius: 14px;
+}
+.tab { border: 0; background: none; color: var(--muted); padding: 10px 4px; border-radius: 10px; font-size: 11px; font-weight: 800; }
+.tab.active { background: #ffffff0d; color: white; }
+.profile { display: flex; align-items: center; gap: 13px; margin: 18px 0; }
+.avatar {
+  width: 61px;
+  height: 61px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--a), var(--b));
+  color: #041019;
+  font-weight: 900;
+  font-size: 20px;
+}
+.menu button {
+  width: 100%;
+  padding: 15px 2px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: white;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+}
+.menu button:last-child { border: 0; }
+.empty { text-align: center; padding: 35px 15px; color: var(--muted); }
+.empty b { display: block; color: white; margin-bottom: 5px; }
+
+/* ===== Bottom sheet / overlay ===== */
+.overlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  background: #000b;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(7px);
+}
+.overlay.open { display: flex; }
+.sheet {
+  width: min(620px, 100%);
+  max-height: 92vh;
+  overflow: auto;
+  background: #0a1421;
+  border: 1px solid var(--line);
+  border-radius: 28px 28px 0 0;
+  padding: 20px;
+}
+.sheethead { display: flex; justify-content: space-between; align-items: center; }
+.close { border: 0; background: #ffffff0a; color: white; width: 38px; height: 38px; border-radius: 12px; }
+.group { margin: 14px 0; }
+.group label { display: block; color: #aab7c8; font-size: 12px; font-weight: 750; margin-bottom: 7px; }
+.input {
+  width: 100%;
+  padding: 13px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: #07101b;
+  color: white;
+  outline: 0;
+}
+.input:focus { border-color: #20c7d866; }
+.payments { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+.pay {
+  border: 1px solid var(--line);
+  background: #ffffff05;
+  color: white;
+  border-radius: 15px;
+  padding: 11px;
+  text-align: left;
+}
+.pay.selected { border-color: var(--a); background: #20c7d80d; }
+.pay img { width: 28px; height: 28px; object-fit: contain; vertical-align: middle; margin-right: 7px; }
+.notice {
+  padding: 12px;
+  border-radius: 14px;
+  background: #20c7d80a;
+  border: 1px solid #20c7d81f;
+  color: #b9d9df;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 13px 0;
+}
+
+/* ===== Auth screen ===== */
+.auth {
+  display: none;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: radial-gradient(circle at 20% 0, #20c7d820, transparent 35%), var(--bg);
+}
+.auth.show { display: flex; }
+.authbox {
+  width: min(430px, 100%);
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background: #0a1421;
+}
+.authbox img { display: block; width: 68px; height: 68px; object-fit: contain; margin: auto auto 17px; }
+.authbox h1 { text-align: center; }
+.authbox p { text-align: center; font-size: 13px; }
+.authlinks { display: flex; gap: 7px; }
+.link { border: 0; background: none; color: var(--a); padding: 12px; font-weight: 750; flex: 1; }
+.lang { text-align: center; margin-top: 10px; }
+.lang button { border: 1px solid var(--line); background: none; color: var(--muted); padding: 6px 10px; border-radius: 9px; }
+.lang .on { color: white; border-color: #20c7d855; }
+
+/* ===== Responsive ===== */
+@media (min-width: 760px) {
+  .services { grid-template-columns: repeat(6, 1fr); }
+  .bottom { position: sticky; top: 74px; bottom: auto; background: transparent; border: 0; backdrop-filter: none; }
+  .nav { justify-content: start; gap: 8px; height: 60px; }
+  .nav button { border: 1px solid var(--line); border-radius: 14px; background: #ffffff05; padding: 8px 15px; }
+  .nav i { display: inline; margin-right: 6px; }
+  .overlay { align-items: center; }
+  .sheet { border-radius: 28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Auth screen (login / register) ===== -->
+<div id="auth" class="auth">
+  <div class="authbox">
+    <img src="./images/logo.png" alt="GONAF+">
+    <h1 id="authTitle" data-t="authWelcome">Bienvenue chez GONAF+</h1>
+    <p id="authSub" data-t="authWelcomeSub">Votre expérience financière moderne.</p>
+
+    <form id="authForm">
+      <div id="regFields" style="display:none">
+        <div class="group">
+          <label data-t="first">Prénom</label>
+          <input id="first" class="input">
+        </div>
+        <div class="group">
+          <label data-t="last">Nom</label>
+          <input id="last" class="input">
+        </div>
+        <div class="group">
+          <label data-t="phone">Téléphone / WhatsApp</label>
+          <input id="phone" class="input">
+        </div>
+        <div class="group">
+          <label data-t="dob">Date de naissance</label>
+          <input id="dob" class="input" type="date">
+        </div>
+      </div>
+
+      <div class="group">
+        <label data-t="email">Email</label>
+        <input id="email" class="input" type="email" required>
+      </div>
+      <div class="group">
+        <label data-t="password">Mot de passe</label>
+        <input id="password" class="input" type="password" required>
+      </div>
+
+      <div id="confirmWrap" class="group" style="display:none">
+        <label data-t="confirm">Confirmer le mot de passe</label>
+        <input id="confirm" class="input" type="password">
+      </div>
+
+      <label id="terms" style="display:none;color:var(--muted);font-size:12px">
+        <input type="checkbox" id="accept"> <span data-t="terms">J'accepte les conditions.</span>
+      </label>
+
+      <button id="authSubmit" class="primary" style="width:100%;margin-top:12px" data-t="loginBtn">Se connecter</button>
+    </form>
+
+    <div class="authlinks">
+      <button id="switch" class="link" data-t="createAccount">Créer un compte</button>
+      <button id="forgot" class="link" data-t="forgotPw">Mot de passe oublié ?</button>
+    </div>
+
+    <div class="lang">
+      <button data-lang="fr" onclick="setLanguage('fr')">FR</button>
+      <button data-lang="ht" onclick="setLanguage('ht')">HT</button>
+    </div>
+    <div id="authMsg" style="text-align:center;color:var(--muted);font-size:12px;margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- ===== Main app ===== -->
+<div id="app" class="app" style="display:none">
+<div class="shell">
+
+  <header class="top">
+    <button class="logo" onclick="view('home')"><img src="./images/logo.png" alt="GONAF+">GONAF+</button>
+    <div class="icons">
+      <button class="icon" onclick="openNotifications()" aria-label="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 13 6 9Z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="icon" onclick="view('profile')" aria-label="Profil">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Home -->
+  <section id="home" class="view active">
+    <div class="hero">
+      <small id="greet">Bonjour 👋</small>
+      <h1 id="welcome">Bienvenue chez GONAF+</h1>
+      <p data-t="intro">Une expérience financière moderne, simple et sécurisée.</p>
+    </div>
+
+    <div class="wallet">
+      <div class="wallet-head"><span>GONAF+ Wallet</span><span>USD</span></div>
+      <div id="balance" class="balance">$0.00</div>
+      <div class="wallet-foot">
+        <span style="color:var(--muted);font-size:12px" data-t="available">Solde disponible</span>
+        <button class="primary" onclick="deposit()" data-t="add">+ Ajouter des fonds</button>
+      </div>
+    </div>
+
+    <div class="section"><h2 data-t="services">Rechargez vos services</h2></div>
+    <div id="services" class="services"></div>
+
+    <div class="section">
+      <h2 data-t="recent">Dernières transactions</h2>
+      <button onclick="view('history')" data-t="allview">Voir tout</button>
+    </div>
+    <div id="recent" class="txlist"></div>
+  </section>
+
+  <!-- Cards -->
+  <section id="cards" class="view">
+    <div class="page">
+      <h1 data-t="cards">Cartes</h1>
+      <p data-t="cardintro">Une expérience de carte virtuelle GONAF+ pensée pour vous.</p>
+      <div class="virtual">
+        <b style="font-size:20px">GONAF+</b>
+        <span class="soon" style="float:right" data-t="soon">Disponible bientôt</span>
+        <div class="chip"></div>
+        <div style="position:absolute;bottom:20px">
+          <small style="color:var(--muted)">GONAF+ Virtual Card</small><br>
+          <b>Votre carte, bientôt.</b>
+        </div>
+      </div>
+      <div class="card">
+        <span class="soon" data-t="soon">Disponible bientôt</span>
+        <h2 data-t="cardtitle">Votre carte virtuelle GONAF+</h2>
+        <p data-t="carddesc">Nous préparons une expérience de carte virtuelle GONAF+ sécurisée, moderne et pratique.</p>
+        <button class="primary" onclick="alert('Waitlist prête à connecter au backend.')" data-t="notify">Me prévenir</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- History -->
+  <section id="history" class="view">
+    <div class="page">
+      <h1 data-t="history">Historique</h1>
+      <p data-t="historyintro">Suivez vos recharges et transactions.</p>
+      <div class="tabs">
+        <button class="tab active" onclick="filter('all',this)" data-t="all">Tout</button>
+        <button class="tab" onclick="filter('pending',this)" data-t="pending">En cours</button>
+        <button class="tab" onclick="filter('completed',this)" data-t="completed">Terminé</button>
+        <button class="tab" onclick="filter('rejected',this)" data-t="rejected">Rejeté</button>
+      </div>
+      <div id="historyList" class="txlist" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <!-- Profile -->
+  <section id="profile" class="view">
+    <div class="page">
+      <h1 data-t="profile">Profil</h1>
+      <p data-t="profileintro">Gérez votre compte et votre sécurité.</p>
+
+      <div class="lang" style="text-align:left;margin:4px 0 18px">
+        <button data-lang="fr" onclick="setLanguage('fr')">FR</button>
+        <button data-lang="ht" onclick="setLanguage('ht')">HT</button>
+      </div>
+
+      <div class="profile">
+        <button id="avatarBtn" class="avatar" style="border:0;padding:0;overflow:hidden" onclick="editAvatar()" aria-label="Photo de profil">
+          <span id="avatarInitial">G</span>
+          <img id="avatarImg" style="display:none;width:100%;height:100%;object-fit:cover" alt="">
+        </button>
+        <div>
+          <h2 id="pname" style="margin:0;font-size:19px">GONAF+ Customer</h2>
+          <p id="pemail" style="margin:4px 0">—</p>
+        </div>
+      </div>
+
+      <div class="card menu">
+        <button onclick="editPersonal()"><span>◉ &nbsp; <span data-t="personal">Informations personnelles</span></span>›</button>
+        <button onclick="changePassword()"><span>⌁ &nbsp; <span data-t="security">Sécurité</span></span>›</button>
+        <button onclick="info()"><span>? &nbsp; <span data-t="support">Support</span></span>›</button>
+      </div>
+
+      <!-- Admin entry point: hidden unless checkAdmin() confirms the logged-in
+           user is in the admins allow-list. Never shown to customers. -->
+      <div id="adminMenu" class="card menu" style="display:none">
+        <button onclick="view('admin')"><span>⚙ &nbsp; Admin Dashboard</span>›</button>
+      </div>
+
+      <button class="secondary" style="width:100%;color:#ff8995" onclick="logout()" data-t="logout">Déconnexion</button>
+    </div>
+  </section>
+
+  <!-- ===== Admin Dashboard (visible only to authorized admins — see checkAdmin()) ===== -->
+  <section id="admin" class="view">
+    <div class="page">
+      <h1>Admin Dashboard</h1>
+      <p>Gestion des commandes GONAF+ — accès restreint.</p>
+
+      <div class="tabs">
+        <button id="adminSecOrders" class="tab active" onclick="adminSection('orders')">Commandes</button>
+        <button id="adminSecCustomers" class="tab" onclick="adminSection('customers')">Clients</button>
+        <button id="adminSecSettings" class="tab" onclick="adminSection('settings')">Paramètres</button>
+      </div>
+
+      <div id="adminOrdersPane" style="margin-top:14px">
+        <div class="group">
+          <label>Rechercher par Order ID</label>
+          <input id="adminSearch" class="input" placeholder="GNF-XXXXXXXX" oninput="loadAdminOrders()">
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" onclick="adminFilter('all',this)">Tout</button>
+          <button class="tab" onclick="adminFilter('pending',this)">Pending</button>
+          <button class="tab" onclick="adminFilter('processing',this)">Processing</button>
+          <button class="tab" onclick="adminFilter('completed',this)">Completed</button>
+          <button class="tab" onclick="adminFilter('rejected',this)">Rejected</button>
+        </div>
+
+        <div id="adminList" class="txlist" style="margin-top:14px"></div>
+      </div>
+
+      <div id="adminCustomersPane" style="display:none;margin-top:14px">
+        <div class="group">
+          <label>Rechercher un client (nom ou email)</label>
+          <input id="adminCustomerSearch" class="input" placeholder="nom@exemple.com" oninput="loadAdminCustomers()">
+        </div>
+        <div id="adminCustomerList" class="txlist"></div>
+      </div>
+
+      <div id="adminSettingsPane" style="display:none;margin-top:14px">
+        <div class="group">
+          <label>Montant minimum (USD)</label>
+          <input id="setMinAmount" class="input" type="number" step="0.01" inputmode="decimal">
+        </div>
+        <div class="group">
+          <label>Montant maximum (USD)</label>
+          <input id="setMaxAmount" class="input" type="number" step="0.01" inputmode="decimal">
+        </div>
+        <div class="group">
+          <label>Frais GONAF+ (%)</label>
+          <input id="setFeePercent" class="input" type="number" step="0.01" inputmode="decimal">
+        </div>
+        <div class="group">
+          <label>Taux USD → HTG</label>
+          <input id="setHtgRate" class="input" type="number" step="0.01" inputmode="decimal">
+        </div>
+        <div class="group">
+          <label>Taux USD → DOP</label>
+          <input id="setDopRate" class="input" type="number" step="0.01" inputmode="decimal">
+        </div>
+        <div id="adminSettingsMsg" style="margin:8px 0;font-size:13px"></div>
+        <button class="primary" style="width:100%" onclick="saveAdminSettings()">Enregistrer</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Bottom navigation -->
+<nav class="bottom">
+  <div class="nav">
+    <button data-v="home" class="active" onclick="view('home')">
+      <i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg></i>
+      <span data-t="home">Accueil</span>
+    </button>
+    <button data-v="cards" onclick="view('cards')">
+      <i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19"/><path d="M6 14.5h4"/></svg></i>
+      <span data-t="cards">Cartes</span>
+    </button>
+    <button data-v="history" onclick="view('history')">
+      <i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></i>
+      <span data-t="history">Historique</span>
+    </button>
+    <button data-v="profile" onclick="view('profile')">
+      <i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg></i>
+      <span data-t="profile">Profil</span>
+    </button>
+  </div>
+</nav>
+
+</div>
+
+<!-- Bottom sheet overlay (recharge wizard, profile forms, notifications, etc.) -->
+<div id="overlay" class="overlay" onclick="if(event.target===this)closeSheet()">
+  <div id="sheet" class="sheet"></div>
+</div>
+
+<script>
+/* =====================================================================
+   SUPABASE CONFIG
+   Replace these two placeholders only.
+   NEVER put service_role, Telegram, Resend or admin secrets here.
+   ===================================================================== */
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const ORDERS_TABLE = "orders";
+
+/* Production site path (GitHub Pages project site, not the bare domain).
+   Passed as redirect_to on signup so the confirmation email link lands
+   back on the working app instead of the bare Pages root, which 404s. */
+const AUTH_EMAIL_REDIRECT_URL = "https://recha-gonaf.github.io/gonaf-recharge/";
+
+const PROOF_BUCKET = "payment-proofs"; // existing private Storage bucket — do not rename
+
+/* New private Storage bucket for profile pictures. Each file lives under
+   a folder named after the owner's auth.uid(), e.g. "<uid>/avatar.jpg",
+   so RLS can restrict read/write to the owning user only (see delivery
+   notes for the required bucket + policies). Does not touch PROOF_BUCKET. */
+const AVATAR_BUCKET = "avatars";
+
+/* Confirmed existing GONAF+ settings table (public.settings):
+   min_amount, max_amount, gonaf_fee_percent, usd_to_htg, usd_to_dop.
+   Values are always read live — never hardcoded. */
+const SETTINGS_TABLE = "settings";
+
+/* Existing secure history RPC: public.get_customer_orders(p_order_ids text[]).
+   Order IDs are saved locally on this device after each successful order and
+   passed to the RPC — no public SELECT policy on orders is used.
+   Now that public.orders has user_id and get_customer_orders filters by
+   auth.uid(), the local cache of IDs must also be scoped per user — a
+   shared key would let one logged-in customer see another's IDs still
+   sitting in localStorage on the same device. */
+const ORDER_IDS_KEY_PREFIX = "gonaf_order_ids_";
+
+function orderIdsKey() {
+  return user?.id ? ORDER_IDS_KEY_PREFIX + user.id : null;
+}
+
+/* ---------------------------------------------------------------------
+   ADMIN DASHBOARD CONFIG
+   No admin architecture existed in this file before this change. The
+   pieces below (admins allow-list table, is_admin()/am_i_admin() RPCs,
+   admin_list_orders()/admin_update_order_status() RPCs, and the
+   admin-proof-url Edge Function) are NEW and must be applied in
+   Supabase before the admin dashboard will work — see the SQL and
+   Edge Function delivered alongside this file. Nothing here touches
+   customer auth, orders insert, fees, payment proof upload, or
+   notify-order.
+   --------------------------------------------------------------------- */
+const ADMIN_PROOF_FN = "admin-proof-url"; // new Edge Function, service-role only, server-side
+
+/* The welcome email is sent by Supabase Auth's Send Email Hook, which
+   invokes the send-welcome-email Edge Function server-side with the
+   required Standard Webhooks signature headers. The frontend never
+   calls that function directly. */
+
+/* Max proof file size accepted client-side before attempting upload (bytes). */
+const MAX_PROOF_BYTES = 8 * 1024 * 1024; // 8MB
+
+/* =====================================================================
+   STATIC DATA: services, payment methods, payment instructions,
+   per-service required fields, and translations.
+   ===================================================================== */
+const S = [
+  { id: "wise", name: "Wise", logo: "./images/wise.png" },
+  { id: "pana", name: "Pana", logo: "./images/pana.png" },
+  { id: "meru", name: "Meru", logo: "./images/meru.png" },
+  { id: "paypal", name: "PayPal", logo: "./images/paypal.png" },
+  { id: "cashapp", name: "Cash App", logo: "./images/cashapp.png" },
+  { id: "usdc", name: "USDC / Base", logo: "./images/usdc.png" }
+];
+
+const P = [
+  { id: "moncash", name: "MonCash", logo: "./images/moncash.png" },
+  { id: "popular", name: "Banco Popular", logo: "./images/banco-popular.png" },
+  { id: "usdc", name: "USDC / Base", logo: "./images/usdc.png" },
+  { id: "paypal", name: "PayPal", logo: "./images/paypal.png" }
+];
+
+/* Real GONAF+ payment instructions per method. currency = what the customer pays in. */
+const PAYINFO = {
+  moncash: {
+    currency: "HTG",
+    fr: "Nom : Berlandina Descieux<br>Téléphone : +509 3897-1619",
+    ht: "Non : Berlandina Descieux<br>Telefòn : +509 3897-1619"
+  },
+  popular: {
+    currency: "DOP",
+    fr: "Référence : 556221<br>Banque : Banco Popular<br>Bénéficiaire : I-Pay<br>Devise : USD ou DOP<br>Type de compte : Corriente<br>RNC : 133-49568-6<br>Compte : 0852556430",
+    ht: "Referans : 556221<br>Bank : Banco Popular<br>Benefisyè : I-Pay<br>Lajan : USD oswa DOP<br>Tip kont : Corriente<br>RNC : 133-49568-6<br>Kont : 0852556430"
+  },
+  usdc: {
+    currency: "USD",
+    fr: "Adresse USDC (réseau Base) :<br><b style=\"word-break:break-all\">0xbc4c2D16d057e86805AB25B55406A0f9172ab602</b>",
+    ht: "Adrès USDC (rezo Base) :<br><b style=\"word-break:break-all\">0xbc4c2D16d057e86805AB25B55406A0f9172ab602</b>"
+  },
+  paypal: {
+    currency: "USD",
+    fr: "Email : hermitemarie@gmail.com<br>Nom : Guerrier Yolla R.",
+    ht: "Imel : hermitemarie@gmail.com<br>Non : Guerrier Yolla R."
+  }
+};
+
+/* Service-specific customer-info fields, collected BEFORE payment method.
+   Maps to existing orders columns only (see svcRow below). */
+const NAME_F = { k: "name", label: { fr: "Nom et Prénom", ht: "Non ak Siyati" } };
+
+const SVC_FIELDS = {
+  wise: [
+    NAME_F,
+    { k: "email", label: { fr: "Email", ht: "Imel" }, type: "email" },
+    { k: "tag", label: { fr: "WiseTag", ht: "WiseTag" } }
+  ],
+  pana: [
+    NAME_F,
+    { k: "email", label: { fr: "Email", ht: "Imel" }, type: "email" },
+    { k: "phone", label: { fr: "Numéro de téléphone Pana", ht: "Nimewo telefòn Pana" } }
+  ],
+  meru: [
+    NAME_F,
+    { k: "email", label: { fr: "Email", ht: "Imel" }, type: "email" },
+    { k: "tag", label: { fr: "MeruTag", ht: "MeruTag" } }
+  ],
+  paypal: [
+    NAME_F,
+    { k: "email", label: { fr: "Email PayPal", ht: "Imel PayPal" }, type: "email" }
+  ],
+  cashapp: [
+    NAME_F,
+    { k: "email", label: { fr: "Email", ht: "Imel" }, type: "email" },
+    { k: "tag", label: { fr: "Cash App tag", ht: "Cash App tag" } }
+  ],
+  usdc: [
+    NAME_F,
+    { k: "address", label: { fr: "Adresse USDC/Base", ht: "Adrès USDC/Base" } }
+  ]
+};
+
+/* Maps wizard field values to the existing per-service orders columns. */
+function svcRow(id, v) {
+  switch (id) {
+    case "wise":    return { wise_email: v.email, wisetag: v.tag };
+    case "pana":    return { pana_email: v.email, pana_phone: v.phone };
+    case "meru":    return { meru_email: v.email, merutag: v.tag };
+    case "paypal":  return { paypal_email: v.email };
+    case "cashapp": return { cashapp_email: v.email, cashapp_tag: v.tag };
+    case "usdc":    return { usdc_base_address: v.address };
+    default:        return {};
+  }
+}
+
+const T = {
+  fr: {
+    first: "Prénom", last: "Nom", phone: "Téléphone / WhatsApp", dob: "Date de naissance", password: "Mot de passe",
+    confirm: "Confirmer le mot de passe", terms: "J'accepte les conditions.",
+    dobRequired: "La date de naissance est obligatoire.",
+    intro: "Une expérience financière moderne, simple et sécurisée.",
+    available: "Solde disponible", add: "+ Ajouter des fonds",
+    services: "Rechargez vos services", recent: "Dernières transactions", allview: "Voir tout",
+    home: "Accueil", cards: "Cartes", history: "Historique", profile: "Profil",
+    cardintro: "Une expérience de carte virtuelle GONAF+ pensée pour vous.",
+    soon: "Disponible bientôt", cardtitle: "Votre carte virtuelle GONAF+",
+    carddesc: "Nous préparons une expérience de carte virtuelle GONAF+ sécurisée, moderne et pratique.",
+    notify: "Me prévenir", historyintro: "Suivez vos recharges et transactions.",
+    all: "Tout", pending: "En cours", completed: "Terminé", rejected: "Rejeté",
+    profileintro: "Gérez votre compte et votre sécurité.",
+    personal: "Informations personnelles", security: "Sécurité",
+    verification: "Vérification KYC", preferences: "Préférences",
+    support: "Support", legal: "Légal", logout: "Déconnexion",
+    authWelcome: "Bienvenue chez GONAF+", authWelcomeSub: "Votre expérience financière moderne.",
+    authRegisterTitle: "Créer votre compte GONAF+", loginBtn: "Se connecter",
+    registerBtn: "Créer mon compte", haveAccount: "J'ai déjà un compte",
+    createAccount: "Créer un compte", forgotPw: "Mot de passe oublié ?", email: "Email",
+    pwMismatch: "Les mots de passe ne correspondent pas.", acceptTerms: "Acceptez les conditions.",
+    recoverySent: "Si cet email existe, les instructions ont été envoyées.",
+    proofRequired: "Ajoutez la preuve.", proofTooLarge: "Le fichier est trop volumineux (8 Mo max).",
+    proofBadType: "Format non supporté. Utilisez une image ou un PDF.",
+    proofFailed: "Le téléversement de la preuve a échoué",
+    profilePic: "Photo de profil",
+    whatsapp: "WhatsApp", telegram: "Telegram", supportEmail: "Email"
+  },
+  ht: {
+    first: "Non", last: "Siyati", phone: "Telefòn / WhatsApp", dob: "Dat nesans", password: "Modpas",
+    confirm: "Konfime modpas la", terms: "Mwen aksepte kondisyon yo.",
+    dobRequired: "Dat nesans lan obligatwa.",
+    intro: "Yon eksperyans finansye modèn, senp ak sekirize.",
+    available: "Balans disponib", add: "+ Ajoute lajan",
+    services: "Rechaje sèvis ou yo", recent: "Dènye tranzaksyon yo", allview: "Gade tout",
+    home: "Akèy", cards: "Kat", history: "Istwa", profile: "Pwofil",
+    cardintro: "Yon eksperyans kat vityèl GONAF+ pou ou.",
+    soon: "Disponib byento", cardtitle: "Kat vityèl GONAF+",
+    carddesc: "Nou ap prepare yon kat GONAF+ ki sekirize, modèn epi pratik.",
+    notify: "Fè m konnen", historyintro: "Swiv rechaj ak tranzaksyon ou yo.",
+    all: "Tout", pending: "An kou", completed: "Fini", rejected: "Rejte",
+    profileintro: "Jere kont ak sekirite ou.",
+    personal: "Enfòmasyon pèsonèl", security: "Sekirite",
+    verification: "Verifikasyon KYC", preferences: "Preferans",
+    support: "Sipò", legal: "Legal", logout: "Dekonekte",
+    authWelcome: "Byenveni nan GONAF+", authWelcomeSub: "Eksperyans finansye modèn ou.",
+    authRegisterTitle: "Kreye kont GONAF+ ou", loginBtn: "Konekte",
+    registerBtn: "Kreye kont mwen", haveAccount: "Mwen gen tan gen yon kont",
+    createAccount: "Kreye yon kont", forgotPw: "Modpas bliye?", email: "Imèl",
+    pwMismatch: "Modpas yo pa menm.", acceptTerms: "Ou dwe aksepte kondisyon yo.",
+    recoverySent: "Si imèl sa a egziste, enstriksyon yo voye.",
+    proofRequired: "Chwazi prèv la.", proofTooLarge: "Fichye a twò gwo (8 Mo maksimòm).",
+    proofBadType: "Fòma pa sipòte. Itilize yon imaj oswa yon PDF.",
+    proofFailed: "Anvwaye prèv la echwe",
+    profilePic: "Foto pwofil",
+    whatsapp: "WhatsApp", telegram: "Telegram", supportEmail: "Imèl"
+  }
+};
+
+/* =====================================================================
+   GLOBAL STATE
+   ===================================================================== */
+let L = localStorage.getItem("gonaf_lang") || "fr";
+let mode = "login";
+let session = null;
+let user = null;
+let orders = [];
+let hist = "all";
+let payment = null;
+let service = null;
+let wiz = {};
+let isAdmin = false;
+let adminHist = "all";
+let adminOrders = [];
+let settings = {
+  fee_percent: 0,
+  htg_rate: 0,
+  dop_rate: 0,
+  min_amount: 0,
+  max_amount: 0,
+  loaded: false
+};
+
+/* =====================================================================
+   SMALL HELPERS
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const tr = k => T[L][k] || T.fr[k] || k;
+const esc = x => String(x ?? "").replace(/[&<>"']/g, m => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
+}[m]));
+
+function openSheet(x) {
+  $("sheet").innerHTML = x;
+  $("overlay").classList.add("open");
+}
+function closeSheet() {
+  $("overlay").classList.remove("open");
+}
+
+/* =====================================================================
+   SUPABASE REST HELPER
+   ===================================================================== */
+async function api(path, opt = {}) {
+  if (SUPABASE_URL.startsWith("YOUR_")) {
+    throw Error(L === "ht" ? "Mete Supabase URL ak anon key anvan." : "Configurez l'URL Supabase et la clé publishable.");
+  }
+  let h = Object.assign({ apikey: SUPABASE_ANON_KEY }, opt.headers || {});
+  if (session?.access_token) h.Authorization = "Bearer " + session.access_token;
+  if (opt.body && !h["Content-Type"]) h["Content-Type"] = "application/json";
+
+  let r = await fetch(SUPABASE_URL + path, { ...opt, headers: h });
+  let txt = await r.text();
+  let d = null;
+  try { d = txt ? JSON.parse(txt) : null; } catch { d = txt; }
+
+  if (!r.ok) throw Error(d?.message || d?.error_description || `HTTP ${r.status}`);
+  return d;
+}
+
+/* =====================================================================
+   SETTINGS (fees + exchange rates) — public.settings, read-only
+   ===================================================================== */
+async function loadSettings() {
+  if (settings.loaded) return settings;
+  try {
+    let rows = await api(`/rest/v1/${SETTINGS_TABLE}?select=min_amount,max_amount,gonaf_fee_percent,usd_to_htg,usd_to_dop&limit=1`);
+    let row = Array.isArray(rows) ? rows[0] : rows;
+    if (row) {
+      settings.min_amount = Number(row.min_amount ?? 0);
+      settings.max_amount = Number(row.max_amount ?? 0);
+      settings.fee_percent = Number(row.gonaf_fee_percent ?? 0);
+      settings.htg_rate = Number(row.usd_to_htg ?? 0);
+      settings.dop_rate = Number(row.usd_to_dop ?? 0);
+    }
+  } catch (e) {
+    console.warn("settings load failed", e);
+  }
+  settings.loaded = true;
+  return settings;
+}
+
+function payCurrency(id) {
+  return PAYINFO[id]?.currency || "USD";
+}
+
+function computeTotals(a) {
+  a = Number(a) || 0;
+  let fee = a * (settings.fee_percent || 0) / 100;
+  let totalUsd = a + fee;
+  let cur = payment ? payCurrency(payment.id) : "USD";
+  let rate = cur === "HTG" ? settings.htg_rate : cur === "DOP" ? settings.dop_rate : 1;
+  let totalLocal = rate ? totalUsd * rate : totalUsd;
+  return { fee, totalUsd, cur, rate, totalLocal };
+}
+
+/* =====================================================================
+   LANGUAGE SWITCHING
+   ===================================================================== */
+function applyAuthLang() {
+  let r = mode === "register";
+  $("authTitle").textContent = r ? tr("authRegisterTitle") : tr("authWelcome");
+  $("authSubmit").textContent = r ? tr("registerBtn") : tr("loginBtn");
+  $("switch").textContent = r ? tr("haveAccount") : tr("createAccount");
+}
+
+function setLanguage(x) {
+  L = x;
+  localStorage.setItem("gonaf_lang", x);
+  document.documentElement.lang = x === "ht" ? "ht-HT" : "fr";
+
+  document.querySelectorAll("[data-t]").forEach(e => { e.textContent = tr(e.dataset.t); });
+  document.querySelectorAll(".lang button").forEach(b => { b.classList.toggle("on", b.dataset.lang === x); });
+
+  applyAuthLang();
+  $("greet").textContent = x === "ht" ? "Bonjou 👋" : "Bonjour 👋";
+  $("welcome").textContent = x === "ht" ? "Byenveni nan GONAF+" : "Bienvenue chez GONAF+";
+
+  renderServices();
+  renderOrders();
+  updateProfile();
+}
+
+/* =====================================================================
+   AUTH: login / register / logout / forgot password
+   ===================================================================== */
+async function login(e, p) {
+  let d = await api("/auth/v1/token?grant_type=password", {
+    method: "POST",
+    body: JSON.stringify({ email: e, password: p })
+  });
+  session = d;
+  user = d.user;
+  localStorage.setItem("gonaf_session", JSON.stringify(d));
+  enter();
+}
+
+async function register() {
+  let e = $("email").value.trim();
+  let p = $("password").value;
+  let dob = $("dob").value;
+  if (!dob) return msg(tr("dobRequired"), 1);
+  if (p !== $("confirm").value) return msg(tr("pwMismatch"), 1);
+  if (!$("accept").checked) return msg(tr("acceptTerms"), 1);
+
+  let first = $("first").value;
+  let last = $("last").value;
+  let phone = $("phone").value;
+
+  let d = await api(
+    "/auth/v1/signup?redirect_to=" + encodeURIComponent(AUTH_EMAIL_REDIRECT_URL),
+    {
+      method: "POST",
+      body: JSON.stringify({
+        email: e,
+        password: p,
+        data: { first_name: first, last_name: last, phone: phone, birth_date: dob }
+      })
+    }
+  );
+
+  // The confirmation/welcome email is sent directly by Supabase Auth's
+  // Custom SMTP (Resend). The Send Email Hook is disabled and
+  // send-welcome-email is not invoked — the frontend makes no manual
+  // call for signup emails, only the redirect_to param above.
+
+  if (d?.access_token) {
+    session = d;
+    user = d.user;
+    localStorage.setItem("gonaf_session", JSON.stringify(d));
+    enter();
+  } else {
+    msg(L === "ht" ? "Kont lan kreye. Verifye imel ou." : "Compte créé. Vérifiez votre email puis connectez-vous.");
+  }
+}
+
+function msg(x, bad) {
+  $("authMsg").textContent = x;
+  $("authMsg").style.color = bad ? "var(--bad)" : "var(--muted)";
+}
+
+$("authForm").onsubmit = async e => {
+  e.preventDefault();
+  try {
+    if (mode === "register") await register();
+    else await login($("email").value.trim(), $("password").value);
+  } catch (x) {
+    msg(x.message, 1);
+  }
+};
+
+$("switch").onclick = () => {
+  mode = mode === "login" ? "register" : "login";
+  let r = mode === "register";
+  $("regFields").style.display = r ? "block" : "none";
+  $("confirmWrap").style.display = r ? "block" : "none";
+  $("terms").style.display = r ? "block" : "none";
+  $("forgot").style.display = r ? "none" : "block";
+  applyAuthLang();
+  msg("");
+};
+
+$("forgot").onclick = async () => {
+  try {
+    await api("/auth/v1/recover", { method: "POST", body: JSON.stringify({ email: $("email").value.trim() }) });
+    msg(tr("recoverySent"));
+  } catch (x) {
+    msg(x.message, 1);
+  }
+};
+
+async function logout() {
+  try { if (session) await api("/auth/v1/logout", { method: "POST" }); } catch {}
+  localStorage.removeItem("gonaf_session");
+  // Only this session's in-memory order state is cleared. Each user's
+  // order IDs live under their own gonaf_order_ids_<uid> key (see
+  // orderIdsKey()) and are never touched here — logging out never
+  // deletes another customer's locally cached order IDs.
+  session = null;
+  user = null;
+  orders = [];
+  $("app").style.display = "none";
+  $("auth").classList.add("show");
+}
+
+function enter() {
+  $("auth").classList.remove("show");
+  $("app").style.display = "block";
+  updateProfile();
+  renderServices();
+  loadOrders();
+  loadSettings();
+  checkAdmin();
+}
+
+/* =====================================================================
+   NAVIGATION / RENDERING
+   ===================================================================== */
+function view(v) {
+  document.querySelectorAll(".view").forEach(x => x.classList.remove("active"));
+  $(v).classList.add("active");
+  document.querySelectorAll(".nav button").forEach(x => x.classList.toggle("active", x.dataset.v === v));
+  scrollTo(0, 0);
+  if (v === "history") loadOrders();
+}
+
+function updateProfile() {
+  let m = user?.user_metadata || {};
+  let n = [m.first_name, m.last_name].filter(Boolean).join(" ") || user?.email?.split("@")[0] || "GONAF+ Customer";
+  $("pname").textContent = n;
+  $("pemail").textContent = user?.email || "—";
+  $("avatarInitial").textContent = n[0]?.toUpperCase() || "G";
+  loadAvatar();
+}
+
+function renderServices() {
+  $("services").innerHTML = S.map(x => `
+    <button class="service" onclick="recharge('${x.id}')">
+      <img src="${x.logo}" alt="${esc(x.name)}">
+      <b>${esc(x.name)}</b>
+      <span>${L === "ht" ? "Recharge sèvis" : "Recharge service"}</span>
+    </button>
+  `).join("");
+}
+
+function sc(s) {
+  s = String(s || "").toLowerCase();
+  if (["completed", "complete", "approved", "done", "success"].includes(s)) return "completed";
+  if (["rejected", "failed", "cancelled", "canceled"].includes(s)) return "rejected";
+  return "pending";
+}
+function sl(s) { return tr(sc(s)); }
+
+function sinfo(n) {
+  return S.find(x => x.id === String(n).toLowerCase() || x.name.toLowerCase() === String(n).toLowerCase())
+    || { name: n || "GONAF+", logo: "./images/logo.png" };
+}
+
+function tx(o) {
+  let s = sinfo(o.service);
+  let a = Number(o.amount_usd ?? o.amount ?? o.total_usd ?? 0);
+  return `
+    <button class="tx" onclick='detail(${JSON.stringify(o).replace(/'/g, "&#39;")})'>
+      <span class="txlogo"><img src="${s.logo}"></span>
+      <span class="txmain">
+        <b>${esc(s.name)}</b>
+        <small>${esc(o.order_id || o.id || "—")}</small>
+      </span>
+      <span class="txright">
+        <b>$${a.toFixed(2)}</b>
+        <span class="status ${sc(o.status)}">${sl(o.status)}</span>
+      </span>
+    </button>
+  `;
+}
+
+function renderOrders() {
+  let a = hist === "all" ? orders : orders.filter(x => sc(x.status) === hist);
+  let empty = `
+    <div class="empty">
+      <b>${L === "ht" ? "Pa gen tranzaksyon ankò" : "Aucune transaction pour le moment"}</b>
+      ${L === "ht" ? "Rechaj ou yo ap parèt isit la." : "Vos recharges apparaîtront ici."}
+    </div>
+  `;
+  $("historyList").innerHTML = a.length ? a.map(tx).join("") : empty;
+  $("recent").innerHTML = orders.length ? orders.slice(0, 3).map(tx).join("") : empty;
+}
+
+function filter(x, b) {
+  hist = x;
+  document.querySelectorAll(".tab").forEach(y => y.classList.remove("active"));
+  b.classList.add("active");
+  renderOrders();
+}
+
+/* =====================================================================
+   ORDER HISTORY — existing secure RPC get_customer_orders(p_order_ids text[])
+   Order IDs are saved locally after each successful order; no public
+   SELECT policy on public.orders is used.
+   ===================================================================== */
+function savedOrderIds() {
+  let key = orderIdsKey();
+  if (!key) return [];
+  try { return JSON.parse(localStorage.getItem(key) || "[]"); }
+  catch { return []; }
+}
+
+function saveOrderId(id) {
+  let key = orderIdsKey();
+  if (!key) return;
+  let a = savedOrderIds();
+  if (!a.includes(id)) {
+    a.unshift(id);
+    localStorage.setItem(key, JSON.stringify(a.slice(0, 200)));
+  }
+}
+
+async function loadOrders() {
+  if (!user || SUPABASE_URL.startsWith("YOUR_")) return renderOrders();
+
+  let ids = savedOrderIds();
+  if (!ids.length) {
+    orders = [];
+    return renderOrders();
+  }
+
+  try {
+    orders = await api(`/rest/v1/rpc/get_customer_orders`, {
+      method: "POST",
+      body: JSON.stringify({ p_order_ids: ids })
+    }) || [];
+  } catch (e) {
+    console.warn(e);
+    orders = [];
+  }
+  renderOrders();
+}
+
+/* =====================================================================
+   RECHARGE WIZARD
+   Service -> Amount -> Service info -> Payment method -> Instructions/Total
+   -> Proof -> Upload proof -> Insert order -> Notify Telegram -> Success
+   ===================================================================== */
+function recharge(id) {
+  service = S.find(x => x.id === id);
+  payment = null;
+  wiz = { amount: 0, fields: {} };
+  stepAmount();
+}
+
+function stepAmount() {
+  let hint = "";
+  if (settings.loaded && (settings.min_amount || settings.max_amount)) {
+    hint = `<div style="color:var(--muted);font-size:12px;margin-top:6px">
+      ${L === "ht" ? "Ant" : "Entre"} $${(settings.min_amount || 0).toFixed(2)}
+      ${L === "ht" ? "ak" : "et"} $${(settings.max_amount || 0).toFixed(2)}
+    </div>`;
+  }
+
+  openSheet(`
+    <div class="sheethead">
+      <h2>${service.name} — Recharge</h2>
+      <button class="close" onclick="closeSheet()">×</button>
+    </div>
+    <div class="group">
+      <label>${L === "ht" ? "Montan (USD)" : "Montant (USD)"}</label>
+      <input id="wAmount" class="input" type="number" min="1" step=".01" placeholder="50.00" value="${wiz.amount || ""}">
+      ${hint}
+    </div>
+    <button class="primary" style="width:100%" onclick="stepAmountGo()">${L === "ht" ? "Kontinye" : "Continuer"}</button>
+  `);
+}
+
+function stepAmountGo() {
+  let a = Number($("wAmount").value);
+  if (!a || a <= 0) return alert(L === "ht" ? "Montan envalid." : "Montant invalide.");
+  if (settings.loaded && settings.min_amount && a < settings.min_amount) {
+    return alert((L === "ht" ? "Montan minimòm se" : "Le montant minimum est") + ` $${settings.min_amount.toFixed(2)}.`);
+  }
+  if (settings.loaded && settings.max_amount && a > settings.max_amount) {
+    return alert((L === "ht" ? "Montan maksimòm se" : "Le montant maximum est") + ` $${settings.max_amount.toFixed(2)}.`);
+  }
+  wiz.amount = a;
+  stepInfo();
+}
+
+function stepInfo() {
+  let flds = SVC_FIELDS[service.id] || [];
+
+  let warn = "";
+  if (service.id === "usdc") {
+    let text = L === "ht"
+      ? "Verifye byen adrès USDC/Base ou anvan ou kontinye. Yon adrès ki mal ekri oswa ki pa yon adrès USDC sou rezo Base ka lakòz yon pèt total lajan an. GONAF+ pa ka rekipere ni ranbouse lajan voye sou yon move adrès."
+      : "Vérifiez attentivement votre adresse USDC/Base avant de continuer. Une adresse incorrecte, mal écrite ou qui n'est pas une adresse USDC compatible avec le réseau Base peut entraîner une perte définitive des fonds. GONAF+ ne pourra pas récupérer ni rembourser les fonds envoyés à une mauvaise adresse.";
+
+    warn = `
+      <div class="notice" style="border-color:#ff6d7b4d;background:#ff6d7b12;color:#ffc7cd">
+        <b>${L === "ht" ? "ATANSYON" : "ATTENTION"}</b><br>${text}
+      </div>
+      <label style="display:flex;gap:8px;align-items:flex-start;color:var(--muted);font-size:12px;margin:10px 0">
+        <input type="checkbox" id="wAck" style="margin-top:2px">
+        ${L === "ht" ? "Mwen konfime mwen verifye adrès USDC/Base la e li kòrèk." : "Je confirme avoir vérifié mon adresse USDC/Base et qu'elle est correcte."}
+      </label>
+    `;
+  }
+
+  let fields = flds.map(f => `
+    <div class="group">
+      <label>${f.label[L] || f.label.fr}</label>
+      <input id="wf_${f.k}" class="input" type="${f.type || "text"}" value="${esc(wiz.fields[f.k] || "")}">
+    </div>
+  `).join("");
+
+  openSheet(`
+    <div class="sheethead">
+      <h2>${service.name} — ${L === "ht" ? "Enfòmasyon" : "Informations"}</h2>
+      <button class="close" onclick="closeSheet()">×</button>
+    </div>
+    ${fields}
+    ${warn}
+    <button class="primary" style="width:100%" onclick="stepInfoGo()">${L === "ht" ? "Kontinye" : "Continuer"}</button>
+  `);
+}
+
+function stepInfoGo() {
+  let flds = SVC_FIELDS[service.id] || [];
+  for (let f of flds) {
+    let v = ($("wf_" + f.k)?.value || "").trim();
+    if (!v) return alert(L === "ht" ? "Tout chan yo obligatwa." : "Tous les champs sont obligatoires.");
+    wiz.fields[f.k] = v;
+  }
+  if (service.id === "usdc" && !$("wAck")?.checked) {
+    return alert(L === "ht" ? "Ou dwe konfime ou verifye adrès la." : "Vous devez confirmer avoir vérifié l'adresse.");
+  }
+  stepPayment();
+}
+
+function stepPayment() {
+  payment = null;
+  // Service and payment method are different things: exclude the payment
+  // method that matches the service being recharged (PayPal / USDC-Base).
+  let list = P.filter(x => !(
+    (service.id === "paypal" && x.id === "paypal") ||
+    (service.id === "usdc" && x.id === "usdc")
+  ));
+
+  openSheet(`
+    <div class="sheethead">
+      <h2>${L === "ht" ? "Metòd peman" : "Méthode de paiement"}</h2>
+      <button class="close" onclick="closeSheet()">×</button>
+    </div>
+    <div class="payments">
+      ${list.map(x => `<button class="pay" onclick="pick('${x.id}',this)"><img src="${x.logo}"><b>${x.name}</b></button>`).join("")}
+    </div>
+    <div id="instruction" class="notice">${L === "ht" ? "Chwazi yon metòd peman." : "Sélectionnez un moyen de paiement."}</div>
+    <div id="calc" class="card" style="display:none"></div>
+    <button class="primary" style="width:100%" id="payContinue" disabled onclick="nextRecharge()">${L === "ht" ? "Kontinye" : "Continuer"}</button>
+  `);
+}
+
+function pick(id, b) {
+  payment = P.find(x => x.id === id);
+  document.querySelectorAll(".pay").forEach(x => x.classList.remove("selected"));
+  b.classList.add("selected");
+
+  let info = PAYINFO[id];
+  $("instruction").innerHTML = `${L === "ht" ? "Enstriksyon peman" : "Instructions de paiement"} — <b>${payment.name}</b><br><br>${info ? (info[L] || info.fr) : ""}`;
+
+  let btn = $("payContinue");
+  if (btn) btn.disabled = false;
+  updateCalc();
+}
+
+function updateCalc() {
+  let box = $("calc");
+  if (!box) return;
+
+  let a = wiz.amount || 0;
+  if (!a || !payment) {
+    box.style.display = "none";
+    return;
+  }
+
+  let c = computeTotals(a);
+  box.style.display = "block";
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between">
+      <span>${L === "ht" ? "Montan rechaj" : "Montant recharge"}</span><b>$${a.toFixed(2)}</b>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px">
+      <span>${L === "ht" ? "Frè GONAF+" : "Frais GONAF+"}</span><b>$${c.fee.toFixed(2)}</b>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px;border-top:1px solid var(--line);padding-top:8px">
+      <span>${L === "ht" ? "Total pou peye" : "Total à payer"}</span>
+      <b>$${c.totalUsd.toFixed(2)}${c.cur !== "USD" ? (c.rate ? ` (${c.totalLocal.toFixed(2)} ${c.cur})` : ` — ${L === "ht" ? "to chanj poko konfigire" : "taux non configuré"}`) : ""}</b>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px;color:var(--muted);font-size:12px">
+      <span>${L === "ht" ? "Lajan peman" : "Devise de paiement"}</span><span>${c.cur}</span>
+    </div>
+  `;
+}
+
+function nextRecharge() {
+  let a = wiz.amount;
+  if (!a) return alert("Montant invalide.");
+  if (!payment) return alert(L === "ht" ? "Chwazi yon metòd peman." : "Choisissez un moyen de paiement.");
+
+  let c = computeTotals(a);
+  openSheet(`
+    <div class="sheethead">
+      <h2>${L === "ht" ? "Prèv peman" : "Preuve de paiement"}</h2>
+      <button class="close" onclick="closeSheet()">×</button>
+    </div>
+    <div class="notice">${L === "ht" ? "Depo/rechaj sa a pa dwe ogmante balans lan dirèkteman." : "Cette opération ne doit jamais augmenter directement le solde wallet."}</div>
+    <div class="card">
+      <b>${service.name}</b>
+      <p>$${a.toFixed(2)} + $${c.fee.toFixed(2)} ${L === "ht" ? "frè" : "frais"} = $${c.totalUsd.toFixed(2)} · ${payment.name}${c.cur !== "USD" && c.rate ? ` (${c.totalLocal.toFixed(2)} ${c.cur})` : ""}</p>
+    </div>
+    <div class="group">
+      <label>${L === "ht" ? "Upload prèv" : "Téléverser la preuve"}</label>
+      <input id="proof" class="input" type="file" accept="image/*,.pdf">
+    </div>
+    <div id="proofMsg" class="notice" style="display:none;border-color:#ff6d7b4d;background:#ff6d7b12;color:#ffc7cd"></div>
+    <button class="primary" style="width:100%" id="submitBtn" onclick="submitRecharge(${c.fee},${c.totalUsd},${c.totalLocal},${c.rate},'${c.cur}')">${L === "ht" ? "Voye rechaj" : "Créer la recharge"}</button>
+  `);
+}
+
+/* ---------------------------------------------------------------------
+   Payment proof upload — existing private Storage bucket "payment-proofs".
+   Bug fix: the previous version threw a single generic error for any
+   failure, which both hid the real cause and could read as "Proof failed"
+   even when the request never reached Storage (e.g. missing session,
+   oversized file). This version:
+     1. Validates the file (present, right type, under the size limit)
+        BEFORE attempting any network call.
+     2. Uploads to the existing bucket/path convention.
+     3. Reads the actual error body from Storage on failure and surfaces it,
+        instead of a generic message.
+     4. Only proceeds to insert the order if the upload response was ok.
+     5. Never marks the recharge as successful when the upload failed.
+   --------------------------------------------------------------------- */
+function proofError(text) {
+  let box = $("proofMsg");
+  if (box) {
+    box.style.display = "block";
+    box.textContent = text;
+  } else {
+    alert(text);
+  }
+}
+
+async function uploadProof(file, path) {
+  let res = await fetch(`${SUPABASE_URL}/storage/v1/object/${PROOF_BUCKET}/${encodeURIComponent(path)}`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: "Bearer " + session.access_token,
+      "Content-Type": file.type || "application/octet-stream",
+      "x-upsert": "false"
+    },
+    body: file
+  });
+
+  if (!res.ok) {
+    let detail = "";
+    try {
+      let body = await res.json();
+      detail = body?.message || body?.error || "";
+    } catch {
+      try { detail = await res.text(); } catch {}
+    }
+    throw Error(`${tr("proofFailed")}${detail ? " — " + detail : ` (HTTP ${res.status})`}`);
+  }
+
+  return path;
+}
+
+async function submitRecharge(fee, totalUsd, totalLocal, rate, cur) {
+  let f = $("proof").files[0];
+  if (!f) return proofError(tr("proofRequired"));
+  if (f.size > MAX_PROOF_BYTES) return proofError(tr("proofTooLarge"));
+  if (!/^image\//.test(f.type) && f.type !== "application/pdf") return proofError(tr("proofBadType"));
+
+  let btn = $("submitBtn");
+  if (btn) { btn.disabled = true; }
+
+  try {
+    let a = wiz.amount;
+    let v = wiz.fields;
+    let name = v.name || "";
+    let id = "GNF-" + Date.now().toString().slice(-8);
+    let path = id + "/" + crypto.randomUUID() + "-" + f.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+
+    // 1) Upload proof first — the order is never inserted if this fails.
+    await uploadProof(f, path);
+
+    // 2) Build the order row using only existing orders columns.
+    let extra = Object.entries(v)
+      .filter(([k]) => k !== "name")
+      .map(([k, val]) => `${k}: ${val}`)
+      .join(" · ");
+
+    let row = {
+      order_id: id,
+      user_id: user.id,
+      language: L,
+      lang: L,
+      service: service.name,
+      amount: a,
+      amount_usd: a,
+      currency: cur,
+      payment_method: payment.name,
+      payment_proof_path: path,
+      proof_path: path,
+      status: "pending",
+      customer_name: name,
+      customer_full_name: name,
+      customer_info: extra,
+      exchange_rate: rate || null,
+      fee_usd: fee,
+      total_usd: totalUsd,
+      total_local: totalLocal,
+      created_at: new Date().toISOString(),
+      ...svcRow(service.id, v)
+    };
+
+    // 3) Insert the order — existing insert logic, unchanged.
+    await api(`/rest/v1/${ORDERS_TABLE}`, {
+      method: "POST",
+      headers: { "Prefer": "return=minimal" },
+      body: JSON.stringify(row)
+    });
+    saveOrderId(id);
+
+    // 4) Best-effort Telegram notification via the existing Edge Function.
+    //    notify-order now expects { orderId }. Uses the real order_id that
+    //    was just inserted — never a UUID, customer ID, or proof path.
+    //    A failure here must NOT undo the order or block the success screen.
+    try {
+      await fetch(`${SUPABASE_URL}/functions/v1/notify-order`, {
+        method: "POST",
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: "Bearer " + session.access_token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ orderId: id })
+      });
+    } catch (e) {
+      console.warn("notify-order failed (order was still created)", e);
+    }
+
+    // 5) Success — only reached if the upload and the insert both succeeded.
+    closeSheet();
+    alert(L === "ht" ? "Rechaj la kreye." : "Recharge créée.");
+    loadOrders();
+  } catch (e) {
+    proofError(e.message);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+/* =====================================================================
+   MISC APP SCREENS
+   ===================================================================== */
+function deposit() {
+  alert(L === "ht" ? "Fonksyon sa a ap disponib byento." : "Cette fonctionnalité sera bientôt disponible.");
+}
+
+function openNotifications() {
+  openSheet(`
+    <div class="sheethead">
+      <h2>${L === "ht" ? "Notifikasyon" : "Notifications"}</h2>
+      <button class="close" onclick="closeSheet()">×</button>
+    </div>
+    <div class="empty">
+      <b>${L === "ht" ? "Pa gen notifikasyon" : "Aucune notification"}</b>
+      ${L === "ht" ? "Notifikasyon yo ap parèt isit la pita." : "Vos notifications apparaîtront ici prochainement."}
+    </div>
+  `);
+}
+
+function detail(o) {
+  let s = sinfo(o.service);
+  let fee = Number(o.fee_usd ?? 0);
+  let tot = Number(o.total_usd ?? o.amount_usd ?? o.amount ?? 0);
+  let loc = Number(o.total_local ?? 0);
+  let cur = o.currency && o.currency !== "USD" ? o.currency : null;
+
+  openSheet(`
+    <div class="sheethead">
+      <h2>${esc(s.name)}</h2>
+      <button class="close" onclick="closeSheet()">×</button>
+    </div>
+    <div class="card">
+      <b>${esc(o.order_id || o.id || "—")}</b>
+      <span class="status ${sc(o.status)}" style="float:right">${sl(o.status)}</span>
+      <p>$${Number(o.amount_usd ?? o.amount ?? 0).toFixed(2)} USD${fee ? ` + $${fee.toFixed(2)} ${L === "ht" ? "frè" : "frais"}` : ""} = $${tot.toFixed(2)}${cur && loc ? ` (${loc.toFixed(2)} ${cur})` : ""}</p>
+      <p>Payment: ${esc(o.payment_method || "—")}</p>
+      <p>${o.created_at ? new Date(o.created_at).toLocaleString() : "—"}</p>
+    </div>
+    <div class="card">
+      <b>${L === "ht" ? "Pwosesis" : "Progression"}</b>
+      <p>Commande créée → Preuve reçue → Vérification → Terminé</p>
+    </div>
+  `);
+}
+
+/* Support contact info. Email intentionally left blank until GONAF+
+   provides one — never invent a placeholder address. */
+const SUPPORT_WHATSAPP = "+1 849 785 7751";
+const SUPPORT_TELEGRAM = "t.me/contactGonaf";
+const SUPPORT_EMAIL = "";
+
+function info() {
+  openSheet(`
+    <div class="sheethead">
+      <h2 data-t="support">${tr("support")}</h2>
+      <button class="close" onclick="closeSheet()">×</button>
+    </div>
+    <div class="card menu">
+      <button type="button" onclick="window.open('https://wa.me/${SUPPORT_WHATSAPP.replace(/[^0-9]/g, "")}','_blank','noopener')"><span>◉ &nbsp; ${tr("whatsapp")}</span><span style="color:var(--muted)">${esc(SUPPORT_WHATSAPP)}</span></button>
+      <button type="button" onclick="window.open('https://${SUPPORT_TELEGRAM}','_blank','noopener')"><span>✈ &nbsp; ${tr("telegram")}</span><span style="color:var(--muted)">${esc(SUPPORT_TELEGRAM)}</span></button>
+      <button type="button"><span>✉ &nbsp; ${tr("supportEmail")}</span><span style="color:var(--muted)">${SUPPORT_EMAIL ? esc(SUPPORT_EMAIL) : "—"}</span></button>
+    </div>
+  `);
+}
+
+/* =====================================================================
+   PROFILE: personal info + password (existing Supabase Auth endpoints)
+   ===================================================================== */
+function editPersonal() {
+  let m = user?.user_metadata || {};
+  openSheet(`
+    <div class="sheethead">
+      <h2 data-t="personal">${tr("personal")}</h2>
+      <button class="close" onclick="closeSheet()">×</button>
+    </div>
+    <div class="group"><label>${tr("first")}</label><input id="epFirst" class="input" value="${esc(m.first_name || "")}"></div>
+    <div class="group"><label>${tr("last")}</label><input id="epLast" class="input" value="${esc(m.last_name || "")}"></div>
+    <div class="group"><label>${tr("phone")}</label><input id="epPhone" class="input" value="${esc(m.phone || "")}"></div>
+    <div id="epMsg" class="notice" style="display:none"></div>
+    <button class="primary" style="width:100%" onclick="savePersonal()">${L === "ht" ? "Sove" : "Enregistrer"}</button>
+  `);
+}
+
+async function savePersonal() {
+  try {
+    await api("/auth/v1/user", {
+      method: "PUT",
+      body: JSON.stringify({
+        data: { first_name: $("epFirst").value, last_name: $("epLast").value, phone: $("epPhone").value }
+      })
+    });
+    user.user_metadata = {
+      ...user.user_metadata,
+      first_name: $("epFirst").value,
+      last_name: $("epLast").value,
+      phone: $("epPhone").value
+    };
+    localStorage.setItem("gonaf_session", JSON.stringify(session));
+    updateProfile();
+    closeSheet();
+    alert(L === "ht" ? "Enfòmasyon yo mete ajou." : "Informations mises à jour.");
+  } catch (e) {
+    let m = $("epMsg");
+    m.style.display = "block";
+    m.textContent = e.message;
+  }
+}
+
+function changePassword() {
+  openSheet(`
+    <div class="sheethead">
+      <h2 data-t="security">${tr("security")}</h2>
+      <button class="close" onclick="closeSheet()">×</button>
+    </div>
+    <div class="group"><label data-t="password">${tr("password")}</label><input id="npw" class="input" type="password"></div>
+    <div class="group"><label data-t="confirm">${tr("confirm")}</label><input id="npw2" class="input" type="password"></div>
+    <div id="pwMsg" class="notice" style="display:none"></div>
+    <button class="primary" style="width:100%" onclick="savePassword()">${L === "ht" ? "Sove" : "Enregistrer"}</button>
+  `);
+}
+
+async function savePassword() {
+  let p = $("npw").value;
+  if (!p || p !== $("npw2").value) {
+    let m = $("pwMsg");
+    m.style.display = "block";
+    m.textContent = L === "ht" ? "Modpas yo pa menm." : "Les mots de passe ne correspondent pas.";
+    return;
+  }
+  try {
+    await api("/auth/v1/user", { method: "PUT", body: JSON.stringify({ password: p }) });
+    closeSheet();
+    alert(L === "ht" ? "Modpas chanje." : "Mot de passe modifié.");
+  } catch (e) {
+    let m = $("pwMsg");
+    m.style.display = "block";
+    m.textContent = e.message;
+  }
+}
+
+/* =====================================================================
+   PROFILE PICTURE — new private Storage bucket AVATAR_BUCKET.
+   Each user's file is stored under "<uid>/..." so RLS can scope access
+   to the owner only. Because the bucket is private, the image is never
+   put directly in an <img src>; it is fetched with the user's own
+   Authorization header and shown as an object URL — no admin/service
+   role involved, no signed-URL Edge Function needed for this.
+   ===================================================================== */
+async function loadAvatar() {
+  let path = user?.user_metadata?.avatar_path;
+  let img = $("avatarImg");
+  let initial = $("avatarInitial");
+  if (!path || SUPABASE_URL.startsWith("YOUR_")) {
+    img.style.display = "none";
+    initial.style.display = "block";
+    return;
+  }
+  try {
+    let r = await fetch(`${SUPABASE_URL}/storage/v1/object/${AVATAR_BUCKET}/${path}`, {
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + session.access_token }
+    });
+    if (!r.ok) throw Error("HTTP " + r.status);
+    let blob = await r.blob();
+    img.src = URL.createObjectURL(blob);
+    img.style.display = "block";
+    initial.style.display = "none";
+  } catch (e) {
+    console.warn("avatar load failed", e);
+    img.style.display = "none";
+    initial.style.display = "block";
+  }
+}
+
+function editAvatar() {
+  openSheet(`
+    <div class="sheethead">
+      <h2 data-t="profilePic">${tr("profilePic")}</h2>
+      <button class="close" onclick="closeSheet()">×</button>
+    </div>
+    <div class="group">
+      <label>${tr("profilePic")}</label>
+      <input id="avatarFile" class="input" type="file" accept="image/*">
+    </div>
+    <div id="avatarMsg" class="notice" style="display:none"></div>
+    <button class="primary" style="width:100%" id="avatarSaveBtn" onclick="saveAvatar()">${L === "ht" ? "Sove" : "Enregistrer"}</button>
+  `);
+}
+
+async function saveAvatar() {
+  let f = $("avatarFile").files[0];
+  let msgBox = $("avatarMsg");
+  if (!f) {
+    msgBox.style.display = "block";
+    msgBox.textContent = L === "ht" ? "Chwazi yon foto." : "Choisissez une photo.";
+    return;
+  }
+  if (f.size > MAX_PROOF_BYTES) {
+    msgBox.style.display = "block";
+    msgBox.textContent = tr("proofTooLarge");
+    return;
+  }
+  if (!/^image\//.test(f.type)) {
+    msgBox.style.display = "block";
+    msgBox.textContent = L === "ht" ? "Chwazi yon imaj." : "Choisissez une image.";
+    return;
+  }
+
+  let btn = $("avatarSaveBtn");
+  if (btn) btn.disabled = true;
+
+  try {
+    let ext = (f.name.split(".").pop() || "jpg").replace(/[^a-zA-Z0-9]/g, "");
+    let path = `${user.id}/avatar-${Date.now()}.${ext}`;
+
+    let up = await fetch(`${SUPABASE_URL}/storage/v1/object/${AVATAR_BUCKET}/${path}`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: "Bearer " + session.access_token,
+        "Content-Type": f.type,
+        "x-upsert": "true"
+      },
+      body: f
+    });
+    if (!up.ok) {
+      let detail = "";
+      try { detail = (await up.json())?.message || ""; } catch {}
+      throw Error(detail || `HTTP ${up.status}`);
+    }
+
+    // Save the new path on the existing Auth user metadata mechanism.
+    await api("/auth/v1/user", {
+      method: "PUT",
+      body: JSON.stringify({ data: { avatar_path: path } })
+    });
+    user.user_metadata = { ...user.user_metadata, avatar_path: path };
+    localStorage.setItem("gonaf_session", JSON.stringify(session));
+
+    closeSheet();
+    loadAvatar();
+  } catch (e) {
+    msgBox.style.display = "block";
+    msgBox.textContent = e.message;
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+/* =====================================================================
+   ADMIN DASHBOARD
+   Uses the SAME Supabase Auth session as customers (no second Supabase
+   client — none existed to reuse). Authorization is enforced entirely
+   server-side by the SECURITY DEFINER RPCs below rejecting any caller
+   who is not in the new public.admins allow-list; the frontend only
+   decides whether to SHOW the admin UI, it never trusts itself.
+   ===================================================================== */
+async function checkAdmin() {
+  isAdmin = false;
+  try {
+    let ok = await api("/rest/v1/rpc/am_i_admin", { method: "POST", body: JSON.stringify({}) });
+    isAdmin = ok === true;
+  } catch (e) {
+    isAdmin = false;
+  }
+  $("adminMenu").style.display = isAdmin ? "block" : "none";
+  if (isAdmin) loadAdminOrders();
+}
+
+/* ---------------------------------------------------------------------
+   ADMIN — CUSTOMERS
+   Never queries auth.users or a service-role key from the browser.
+   Reads through a new SECURITY DEFINER RPC (admin_list_customers) that,
+   like admin_list_orders, rejects any caller not in public.admins and
+   returns only the safe columns below — no password/hash of any kind.
+   See delivery notes for the required SQL if this RPC does not exist yet.
+   --------------------------------------------------------------------- */
+function adminSection(sec) {
+  $("adminSecOrders").classList.toggle("active", sec === "orders");
+  $("adminSecCustomers").classList.toggle("active", sec === "customers");
+  $("adminSecSettings").classList.toggle("active", sec === "settings");
+  $("adminOrdersPane").style.display = sec === "orders" ? "block" : "none";
+  $("adminCustomersPane").style.display = sec === "customers" ? "block" : "none";
+  $("adminSettingsPane").style.display = sec === "settings" ? "block" : "none";
+  if (sec === "customers") loadAdminCustomers();
+  if (sec === "settings") loadAdminSettings();
+}
+
+/* ---------------------------------------------------------------------
+   ADMIN — SETTINGS
+   Reads public.settings (id=1) directly (read-only GET, same table the
+   public loadSettings() already reads). Saves go only through the
+   SECURITY DEFINER RPC admin_update_settings, which re-checks
+   public.is_admin(auth.uid()) server-side.
+   --------------------------------------------------------------------- */
+async function loadAdminSettings() {
+  if (!isAdmin) return;
+  let msg = $("adminSettingsMsg");
+  msg.textContent = "";
+  try {
+    let rows = await api("/rest/v1/settings?id=eq.1&select=id,min_amount,max_amount,gonaf_fee_percent,usd_to_htg,usd_to_dop,updated_at");
+    let row = Array.isArray(rows) ? rows[0] : rows;
+    if (row) {
+      $("setMinAmount").value = row.min_amount ?? "";
+      $("setMaxAmount").value = row.max_amount ?? "";
+      $("setFeePercent").value = row.gonaf_fee_percent ?? "";
+      $("setHtgRate").value = row.usd_to_htg ?? "";
+      $("setDopRate").value = row.usd_to_dop ?? "";
+    }
+  } catch (e) {
+    console.warn("settings load (admin) failed", e);
+    msg.style.color = "#ff8995";
+    msg.textContent = esc(e?.message || String(e) || "Erreur inconnue");
+  }
+}
+
+async function saveAdminSettings() {
+  if (!isAdmin) return;
+  let msg = $("adminSettingsMsg");
+  msg.textContent = "";
+
+  let min = Number($("setMinAmount").value);
+  let max = Number($("setMaxAmount").value);
+  let fee = Number($("setFeePercent").value);
+  let htg = Number($("setHtgRate").value);
+  let dop = Number($("setDopRate").value);
+
+  if (!Number.isFinite(min) || min <= 0) {
+    msg.style.color = "#ff8995";
+    msg.textContent = "Le montant minimum doit être un nombre positif valide.";
+    return;
+  }
+  if (!Number.isFinite(max) || max <= min) {
+    msg.style.color = "#ff8995";
+    msg.textContent = "Le montant maximum doit être supérieur au montant minimum.";
+    return;
+  }
+  if (!Number.isFinite(fee) || fee < 0) {
+    msg.style.color = "#ff8995";
+    msg.textContent = "Les frais GONAF+ doivent être un nombre valide et non négatif.";
+    return;
+  }
+  if (!Number.isFinite(htg) || htg <= 0) {
+    msg.style.color = "#ff8995";
+    msg.textContent = "Le taux USD → HTG doit être un nombre positif valide.";
+    return;
+  }
+  if (!Number.isFinite(dop) || dop <= 0) {
+    msg.style.color = "#ff8995";
+    msg.textContent = "Le taux USD → DOP doit être un nombre positif valide.";
+    return;
+  }
+
+  try {
+    await api("/rest/v1/rpc/admin_update_settings", {
+      method: "POST",
+      body: JSON.stringify({
+        p_min_amount: min,
+        p_max_amount: max,
+        p_gonaf_fee_percent: fee,
+        p_usd_to_htg: htg,
+        p_usd_to_dop: dop
+      })
+    });
+    settings.loaded = false;
+    await loadAdminSettings();
+    msg.style.color = "#7fe0a0";
+    msg.textContent = "Paramètres enregistrés.";
+  } catch (e) {
+    console.warn("admin_update_settings failed", e);
+    msg.style.color = "#ff8995";
+    msg.textContent = esc(e?.message || String(e) || "Erreur inconnue");
+  }
+}
+
+async function loadAdminCustomers() {
+  if (!isAdmin) return;
+  let search = $("adminCustomerSearch")?.value.trim() || null;
+  let list = $("adminCustomerList");
+
+  let rows;
+  try {
+    rows = await api("/rest/v1/rpc/admin_list_customers", {
+      method: "POST",
+      body: JSON.stringify({})
+    }) || [];
+    if (search) {
+      let s = search.toLowerCase();
+      rows = rows.filter(c =>
+        (c.first_name || "").toLowerCase().includes(s) ||
+        (c.last_name || "").toLowerCase().includes(s) ||
+        (c.email || "").toLowerCase().includes(s) ||
+        (c.phone || "").toLowerCase().includes(s)
+      );
+    }
+  } catch (e) {
+    console.warn("admin_list_customers failed", e);
+    list.innerHTML = `<div class="empty">
+      <b>Erreur chargement clients</b>
+      ${esc(e?.message || String(e) || "Erreur inconnue")}
+    </div>`;
+    return;
+  }
+
+  if (!rows.length) {
+    list.innerHTML = `<div class="empty"><b>Aucun client</b>Aucun client ne correspond à cette recherche.</div>`;
+    return;
+  }
+
+  list.innerHTML = rows.map(c => `
+    <div class="card">
+      <b>${esc([c.first_name, c.last_name].filter(Boolean).join(" ") || "—")}</b>
+      <p style="margin:8px 0 4px">${esc(c.email || "—")} · ${esc(c.phone || "—")}</p>
+      <p style="margin:4px 0;color:var(--muted);font-size:12px">
+        ${L === "ht" ? "Dat nesans" : "Date de naissance"}: ${esc(c.date_of_birth || "—")} ·
+        ${L === "ht" ? "Enskri" : "Inscrit"}: ${c.created_at ? new Date(c.created_at).toLocaleDateString() : "—"}
+      </p>
+      <p style="margin:4px 0;color:var(--muted);font-size:11px">ID: ${esc(c.id || "—")}</p>
+    </div>
+  `).join("");
+}
+
+function adminFilter(x, b) {
+  adminHist = x;
+  document.querySelectorAll("#admin .tab").forEach(y => y.classList.remove("active"));
+  b.classList.add("active");
+  loadAdminOrders();
+}
+
+async function loadAdminOrders() {
+  if (!isAdmin) return;
+  let search = $("adminSearch")?.value.trim() || null;
+  let status = adminHist === "all" ? null : adminHist;
+
+  try {
+    adminOrders = await api("/rest/v1/rpc/admin_list_orders", {
+      method: "POST",
+      body: JSON.stringify({ p_status: status, p_search: search, p_limit: 200 })
+    }) || [];
+  } catch (e) {
+    console.warn("admin_list_orders failed", e);
+    adminOrders = [];
+  }
+  renderAdminOrders();
+}
+
+function renderAdminOrders() {
+  let box = $("adminList");
+  if (!adminOrders.length) {
+    box.innerHTML = `<div class="empty"><b>Aucune commande</b>Aucune commande ne correspond à ce filtre.</div>`;
+    return;
+  }
+
+  box.innerHTML = adminOrders.map(o => {
+    let fee = Number(o.fee_usd ?? 0);
+    let total = Number(o.total_usd ?? o.amount_usd ?? o.amount ?? 0);
+    let hasProof = !!(o.payment_proof_path || o.proof_path);
+
+    return `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <b>${esc(o.order_id || "—")}</b>
+          <span class="status ${sc(o.status)}">${esc(o.status || "pending")}</span>
+        </div>
+        <p style="margin:8px 0 4px">
+          ${esc(o.service || "—")} · $${Number(o.amount_usd ?? o.amount ?? 0).toFixed(2)} + $${fee.toFixed(2)} frais = $${total.toFixed(2)} ${o.currency && o.currency !== "USD" ? esc(o.currency) : ""}
+        </p>
+        <p style="margin:4px 0;color:var(--muted);font-size:12px">
+          ${esc(o.payment_method || "—")} · ${esc(o.customer_full_name || o.customer_name || "—")} · ${o.created_at ? new Date(o.created_at).toLocaleString() : "—"}
+        </p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+          ${hasProof ? `<button class="secondary" onclick="viewProof('${esc(o.order_id)}')">Voir la preuve</button>` : ""}
+          <button class="secondary" onclick="setOrderStatus('${esc(o.order_id)}','processing')">Processing</button>
+          <button class="primary" onclick="setOrderStatus('${esc(o.order_id)}','completed')">Approve</button>
+          <button class="secondary" style="color:var(--bad)" onclick="setOrderStatus('${esc(o.order_id)}','rejected')">Reject</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+async function setOrderStatus(orderId, status) {
+  if (!isAdmin) return;
+  const existingOrder = adminOrders.find(o => o.order_id === orderId);
+  try {
+    await api("/rest/v1/rpc/admin_update_order_status", {
+      method: "POST",
+      body: JSON.stringify({ p_order_id: orderId, p_status: status })
+    });
+
+    if (existingOrder) {
+      try {
+        await fetch(`${SUPABASE_URL}/functions/v1/send-order-status-email`, {
+          method: "POST",
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: "Bearer " + session.access_token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            record: {
+              ...existingOrder,
+              status: status
+            }
+          })
+        });
+      } catch (emailError) {
+        console.warn("send-order-status-email failed:", emailError);
+      }
+    }
+
+    loadAdminOrders();
+  } catch (e) {
+    alert("Erreur: " + e.message);
+  }
+}
+
+/* Payment proof is private. The admin never gets a direct Storage URL —
+   a signed, time-limited URL is minted server-side by the admin-proof-url
+   Edge Function (using the service_role key, which stays in Supabase),
+   after that function verifies the caller is an admin. */
+async function viewProof(orderId) {
+  if (!isAdmin) return;
+  try {
+    let r = await fetch(`${SUPABASE_URL}/functions/v1/${ADMIN_PROOF_FN}`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: "Bearer " + session.access_token,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ order_id: orderId })
+    });
+    let d = await r.json();
+    if (!r.ok || !d?.url) throw Error(d?.error || `HTTP ${r.status}`);
+    window.open(d.url, "_blank", "noopener");
+  } catch (e) {
+    alert("Impossible d'ouvrir la preuve: " + e.message);
+  }
+}
+
+
+(async () => {
+  setLanguage(L);
+  try {
+    let raw = localStorage.getItem("gonaf_session");
+    if (raw) {
+      session = JSON.parse(raw);
+      user = session.user;
+    }
+  } catch {}
+  if (user) enter();
+  else $("auth").classList.add("show");
+})();
+
+</script>
+</body>
+</html>
