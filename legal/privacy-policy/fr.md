@@ -1,4 +1,4 @@
-POLITIQUE DE CONFIDENTIALITÉ
+##POLITIQUE DE CONFIDENTIALITÉ
 
 Dernière mise à jour : 8 septembre 2026
 
